@@ -471,6 +471,48 @@ graph TB
 | macOS | `~/Library/Application Support/vicebrain/Partitions/` |
 | Linux | `~/.config/vicebrain/Partitions/` |
 
+### Cache & Data Clearing
+
+To clear application cache and reset the app state (including the legal disclaimer modal):
+
+#### Windows
+
+```powershell
+# Full reset (remove all app data)
+Remove-Item -Recurse -Force "$env:APPDATA\vicebrain\*"
+
+# Cache only (keep settings and sessions)
+Remove-Item -Recurse -Force "$env:APPDATA\vicebrain\Cache\*"
+Remove-Item -Recurse -Force "$env:APPDATA\vicebrain\Code Cache\*"
+
+# Using CMD
+rd /s /q "%APPDATA%\vicebrain"
+```
+
+#### macOS
+
+```bash
+# Full reset
+rm -rf ~/Library/Application\ Support/vicebrain
+
+# Cache only
+rm -rf ~/Library/Application\ Support/vicebrain/Cache
+rm -rf ~/Library/Application\ Support/vicebrain/Code\ Cache
+```
+
+#### Linux
+
+```bash
+# Full reset
+rm -rf ~/.config/vicebrain
+
+# Cache only
+rm -rf ~/.config/vicebrain/Cache
+rm -rf ~/.config/vicebrain/Code\ Cache
+```
+
+After clearing, run `npm start` to see the legal disclaimer modal again.
+
 ### Security Notes
 
 ViceBrain includes several security bypass mechanisms for embedding AI services:
