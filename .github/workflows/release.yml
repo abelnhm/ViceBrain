@@ -49,25 +49,27 @@ jobs:
           name: windows
           path: |
             dist/ViceBrain-*-Setup.exe
-            dist/ViceBrain-*.exe
-            dist/win-unpacked/
+            dist/ViceBrain-*-portable.exe
 
       - name: Upload macOS artifacts
         if: matrix.os == 'macos-latest'
         uses: actions/upload-artifact@v4
         with:
           name: mac
-          path: |
-            dist/*.dmg
-            dist/mac/
+          path: dist/*.dmg
+
+      - name: Package Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          cd dist
+          zip -r ViceBrain-1.0.0-linux.zip linux-unpacked
 
       - name: Upload Linux artifacts
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
           name: linux
-          path: |
-            dist/linux-unpacked/
+          path: dist/ViceBrain-1.0.0-linux.zip
 
   create-release:
     needs: release
