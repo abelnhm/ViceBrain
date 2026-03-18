@@ -302,7 +302,21 @@ initLanguage();
 initLoginNote();
 initServices();
 initEventListeners();
+checkLegalAccept();
 buildSidebar();
 rebuildGrid();
 setLayout('cols');
 document.getElementById('btnToggleIcons').textContent = useIcons ? '◐' : '◑';
+
+function checkLegalAccept() {
+  try {
+    const accepted = storage.get('legalAccepted', false);
+    if (!accepted) {
+      document.getElementById('legalDialog').style.display = 'flex';
+      document.getElementById('btnAcceptLegal').addEventListener('click', () => {
+        storage.set('legalAccepted', true);
+        document.getElementById('legalDialog').style.display = 'none';
+      });
+    }
+  } catch(e) {}
+}

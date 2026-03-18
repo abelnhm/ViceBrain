@@ -1,0 +1,132 @@
+MIT License
+
+Copyright (c) 2024 Abel Naharro
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+================================================================================
+CLÁUSULAS ESPECIALES DE USO EDUCATIVO / SPECIAL USE CLAUSES FOR EDUCATIONAL USE
+================================================================================
+
+1. USO PERMITIDO / PERMITTED USE
+   -----------------------------
+   Este software puede ser estudiado, modificado y utilizado con fines
+   académicos y de investigación. This software may be studied, modified,
+   and used for academic and research purposes.
+
+2. PROHIBICIÓN COMERCIAL / COMMERCIAL PROHIBITION
+   ------------------------------------------------
+   No está permitido el uso comercial sin autorización expresa del titular
+   original. Commercial use is not permitted without express authorization
+   from the original copyright holder.
+
+3. ATRIBUTION REQUERIDA / REQUIRED ATTRIBUTION
+   --------------------------------------------
+   Cualquier modificación o redistributed debe mencionar claramente:
+   
+   - El nombre del proyecto original: ViceBrain
+   - URL del repositorio original
+   - Nombre del autor original: Abel Naharro
+   
+   Any modification or redistribution must clearly mention:
+   - Original project name: ViceBrain
+   - Original repository URL
+   - Original author: Abel Naharro
+
+
+================================================================================
+EXENCIÓN DE RESPONSABILIDAD / DISCLAIMER OF LIABILITY
+================================================================================
+
+ESTE SOFTWARE SE PROPORCIONA "TAL CUAL" PARA FINES EDUCATIVOS Y DE 
+INVESTIGACIÓN. EL AUTOR ORIGINAL NO SE RESPONSABILIZA DE:
+
+THIS SOFTWARE IS PROVIDED "AS IS" FOR EDUCATIONAL AND RESEARCH PURPOSES.
+THE ORIGINAL AUTHOR IS NOT LIABLE FOR:
+
+• Violaciones de Términos de Servicio de terceros / Third-party ToS violations
+• Suspensión o bloqueo de cuentas en servicios de IA / Account suspension/blocking
+• Implicaciones legales bajo leyes de computación fraude (CFAA, DMCA, etc.) /
+  Legal implications under computer fraud laws
+• Uso indebido, modificaciones no autorizadas o redistribución /
+  Misuse, unauthorized modifications, or redistribution
+• Cualquier daño directo o indirecto / Any direct or indirect damages
+• Pérdida de datos o información / Data or information loss
+• Pérdida de oportunidades de negocio / Loss of business opportunities
+
+USO BAJO SU PROPIO RIESGO. Es responsabilidad del usuario verificar que
+el uso de esta aplicación cumple con:
+
+USE AT YOUR OWN RISK. It is the user's responsibility to verify that
+the use of this application complies with:
+
+• Las leyes aplicables en su jurisdicción / Applicable laws in your jurisdiction
+• Los Términos de Servicio de los servicios de IA utilizados /
+  Terms of Service of the AI services used
+• Cualquier regulación local sobre software o ciberseguridad /
+  Any local regulations on software or cybersecurity
+
+
+================================================================================
+NOTAS SOBRE SERVICIOS DE TERCEROS / THIRD-PARTY SERVICES NOTICE
+================================================================================
+
+Esta aplicación interactúa con servicios de terceros (ChatGPT, Gemini, Claude,
+Kimi, DeepSeek, Qwen, Mistral, Grok, Z, Copilot, Perplexity, Meta AI, Luzia)
+que son propiedad de sus respectivas compañías:
+
+This application interacts with third-party services (ChatGPT, Gemini, Claude,
+Kimi, DeepSeek, Qwen, Mistral, Grok, Z, Copilot, Perplexity, Meta AI, Luzia)
+that are owned by their respective companies:
+
+• OpenAI (ChatGPT)
+• Google (Gemini)
+• Anthropic (Claude)
+• Moonshot AI (Kimi)
+• DeepSeek AI (DeepSeek)
+• Alibaba Cloud (Qwen)
+• Mistral AI (Mistral)
+• xAI (Grok)
+• Z AI (Z)
+• Microsoft (Copilot)
+• Perplexity AI (Perplexity)
+• Meta (Meta AI)
+• Luzia (Luzia)
+
+El uso de esta aplicación puede violar los Términos de Servicio de estos
+servicios. El usuario es el único responsable de las consecuencias.
+
+Use of this application may violate the Terms of Service of these services.
+The user is solely responsible for the consequences.
+
+
+================================================================================
+LIMITACIÓN DE RESPONSABILIDAD / LIMITATION OF LIABILITY
+================================================================================
+
+EN NINGÚN CASO EL AUTOR ORIGINAL O LOS COLABORADORES SERÁN RESPONSABLES
+DE NINGÚN RECLAMO, DAÑO O RESPONSABILIDAD, YA SEA EN UNA ACCIÓN DE
+CONTRATO, AGRAVIO O DE OTRO MODO, QUE SURJA DE, O EN CONEXIÓN CON,
+EL SOFTWARE O EL USO U OTRO TIPO DE ACCIONES EN EL SOFTWARE.
+
+IN NO EVENT SHALL THE ORIGINAL AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OR IN CONNECTION WITH THE SOFTWARE OR
+THE USE OR OTHER DEALINGS IN THE SOFTWARE.

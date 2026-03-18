@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "ViceBrain - All major AI chats side by side",
   "author": "ViceBrain Team / Abel Naharro",
+  "warning": "⚠ DISCLAIMER: This software is provided for EDUCATIONAL purposes only. The author is NOT liable for ToS violations, account suspensions, or legal consequences. USE AT YOUR OWN RISK. See LICENSE file for full terms.",
   "main": "src/main/index.js",
   "scripts": {
     "start": "electron .",
