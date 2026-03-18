@@ -76,8 +76,9 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 }
 .tb-btn:hover { border-color: var(--accent-cyan); color: var(--txt); }
 .tb-btn.on    { background: var(--accent-purple); border-color: var(--accent-purple); color: #fff; }
-#langToggle, #themeToggle, #toggleSidebar { padding: 6px 10px; }
-#langToggle span, #themeToggle span, #toggleSidebar span { font-size: 1rem; }
+#langToggle, #themeToggle, #toggleSidebar, #btnToggleIcons { padding: 6px 10px; }
+#langToggle span, #themeIcon, #sidebarIcon { font-size: 1rem; }
+#btnToggleIcons { font-size: 1rem; }
 #sidebarIcon { margin-right: 4px; }
 
 /* layout mode group */
@@ -434,6 +435,9 @@ textarea:focus { border-color: var(--accent-cyan); }
     <button class="tb-btn" id="langToggle" onclick="toggleLanguage()" title="Cambiar idioma">
       <span id="currentLangFlag">🇪🇸</span>
     </button>
+    <button class="tb-btn" id="btnToggleIcons" onclick="toggleIconMode()" title="Mostrar iconos">
+      ◑
+    </button>
     <button class="tb-btn" id="themeToggle" onclick="toggleTheme()" title="Cambiar tema">
       <span id="themeIcon">🌙</span>
     </button>
@@ -456,7 +460,6 @@ textarea:focus { border-color: var(--accent-cyan); }
       ⚠ Login solo con email/contraseña.<br>Google, Microsoft y Apple no funcionan.
     </div>
     <div class="sb-footer">
-      <button id="btnToggleIcons" onclick="toggleIconMode()">Iconos</button>
       <button onclick="toggleAll(true)" id="btnActivarTodos">Activar todos</button>
       <button onclick="toggleAll(false)" id="btnDesactivarTodos">Desactivar todos</button>
       <button onclick="showAddServiceDialog()" id="btnAddService">+ Añadir servicio</button>
@@ -1314,7 +1317,7 @@ loadTheme();
 buildSidebar();
 rebuildGrid();
 setLayout('cols'); // default: columns mode
-document.getElementById('btnToggleIcons').textContent = (useIcons ? '◐' : '◑') + ' Iconos';
+document.getElementById('btnToggleIcons').textContent = useIcons ? '◐' : '◑';
 updateLanguageUI();
 updateAllTranslations();
 </script>
