@@ -27,6 +27,7 @@
       "main": "src/main/index.js"
     },
     "asar": true,
+    "publish": null,
     "win": {
       "target": [
         {
