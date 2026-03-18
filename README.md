@@ -18,6 +18,10 @@
 
 ViceBrain is a powerful multi-service AI chat browser that enables users to interact with multiple artificial intelligence services simultaneously in a single unified interface. Designed for developers, researchers, and AI enthusiasts who need to compare responses across different models or work with multiple AI platforms concurrently.
 
+![ViceBrain Screenshot Dark Theme](assets/screenshots/capture-main-dark.png)
+
+![ViceBrain Screenshot Light Theme](assets/screenshots/capture-main-light.png)
+
 ## Key Features
 
 - **Multi-Service Integration**: Access up to 13 AI chat services from a single application
@@ -36,11 +40,11 @@ ViceBrain is a powerful multi-service AI chat browser that enables users to inte
 
 Before installing ViceBrain, ensure your system meets the following requirements:
 
-| Requirement | Minimum Version | Recommended Version |
-|-------------|-----------------|---------------------|
-| Node.js     | 18.x            | 20.x LTS            |
-| npm         | 8.x             | 10.x                |
-| Operating System | Windows 10 / macOS 10.15 / Ubuntu 20.04 | Latest stable |
+| Requirement      | Minimum Version                         | Recommended Version |
+| ---------------- | --------------------------------------- | ------------------- |
+| Node.js          | 18.x                                    | 20.x LTS            |
+| npm              | 8.x                                     | 10.x                |
+| Operating System | Windows 10 / macOS 10.15 / Ubuntu 20.04 | Latest stable       |
 
 ### Installation Steps
 
@@ -92,6 +96,7 @@ npm run build:win
 **Output location:** `dist/ViceBrain.exe`
 
 **Notes:**
+
 - The portable executable does not require installation
 - Run as administrator may be needed for first-time execution
 - Windows Defender may flag the application; this is normal for unsigned executables
@@ -107,6 +112,7 @@ npm run build:mac
 **Output location:** `dist/ViceBrain.dmg`
 
 **Notes:**
+
 - Requires macOS 10.15 (Catalina) or later
 - Code signing is recommended for distribution outside App Store
 - Gatekeeper may require manual approval for first run
@@ -122,6 +128,7 @@ npm run build:linux
 **Output location:** `dist/ViceBrain`
 
 **Notes:**
+
 - Requires FUSE for mounting
 - AppImage is portable across most major distributions
 - May require making the file executable: `chmod +x ViceBrain`
@@ -151,11 +158,11 @@ graph TB
         B --> E[session.js]
         C --> F[services.js]
     end
-    
+
     subgraph "Preload Process"
         G[spoof.js]
     end
-    
+
     subgraph "Renderer Process"
         H[index.html]
         H --> I[app.js]
@@ -166,29 +173,29 @@ graph TB
         J --> N[layout.js]
         J --> O[dialogs.js]
     end
-    
+
     A --> G
     G --> H
 ```
 
 ### Layer Responsibilities
 
-| Layer | Module | Responsibility |
-|-------|--------|----------------|
-| **Main Process** | `index.js` | Application lifecycle, single instance lock, command-line switches |
-| **Main Process** | `window.js` | BrowserWindow creation, session patching, webview management |
-| **Main Process** | `ipc.js` | Inter-process communication handlers for prompt injection |
-| **Main Process** | `auth.js` | OAuth flow handling, external browser integration |
-| **Main Process** | `session.js` | Session security patches, lock file cleanup |
-| **Main Process** | `services.js` | Service definitions, user agent configuration |
-| **Preload** | `spoof.js` | Browser fingerprint spoofing, security workarounds |
-| **Renderer** | `app.js` | Core application logic, state management, event handling |
-| **Renderer** | `broadcast.js` | Prompt injection orchestration |
-| **Renderer** | `sidebar.js` | Service list management, favorites system |
-| **Renderer** | `layout.js` | Column and grid layout management |
-| **Renderer** | `dialogs.js` | Modal dialogs for service management |
-| **Renderer** | `i18n.js` | Internationalization (Spanish/English) |
-| **Renderer** | `storage.js` | LocalStorage abstraction |
+| Layer            | Module         | Responsibility                                                     |
+| ---------------- | -------------- | ------------------------------------------------------------------ |
+| **Main Process** | `index.js`     | Application lifecycle, single instance lock, command-line switches |
+| **Main Process** | `window.js`    | BrowserWindow creation, session patching, webview management       |
+| **Main Process** | `ipc.js`       | Inter-process communication handlers for prompt injection          |
+| **Main Process** | `auth.js`      | OAuth flow handling, external browser integration                  |
+| **Main Process** | `session.js`   | Session security patches, lock file cleanup                        |
+| **Main Process** | `services.js`  | Service definitions, user agent configuration                      |
+| **Preload**      | `spoof.js`     | Browser fingerprint spoofing, security workarounds                 |
+| **Renderer**     | `app.js`       | Core application logic, state management, event handling           |
+| **Renderer**     | `broadcast.js` | Prompt injection orchestration                                     |
+| **Renderer**     | `sidebar.js`   | Service list management, favorites system                          |
+| **Renderer**     | `layout.js`    | Column and grid layout management                                  |
+| **Renderer**     | `dialogs.js`   | Modal dialogs for service management                               |
+| **Renderer**     | `i18n.js`      | Internationalization (Spanish/English)                             |
+| **Renderer**     | `storage.js`   | LocalStorage abstraction                                           |
 
 ---
 
@@ -242,15 +249,15 @@ vicebrain/
 
 ### Directory Descriptions
 
-| Directory | Description |
-|-----------|-------------|
-| `src/main/` | Electron main process code handling app lifecycle, window management, and system integration |
-| `src/preload/` | Preload scripts providing secure bridges between main and renderer processes |
-| `src/renderer/` | Frontend UI code including HTML, CSS, and JavaScript for the user interface |
-| `assets/icons/` | Application icons for different platforms and resolutions |
-| `src/renderer/js/app/` | Core application logic including state management and utilities |
-| `src/renderer/js/components/` | Reusable UI components for sidebar, layout, broadcast, and dialogs |
-| `src/renderer/js/data/` | Static data definitions for AI services |
+| Directory                     | Description                                                                                  |
+| ----------------------------- | -------------------------------------------------------------------------------------------- |
+| `src/main/`                   | Electron main process code handling app lifecycle, window management, and system integration |
+| `src/preload/`                | Preload scripts providing secure bridges between main and renderer processes                 |
+| `src/renderer/`               | Frontend UI code including HTML, CSS, and JavaScript for the user interface                  |
+| `assets/icons/`               | Application icons for different platforms and resolutions                                    |
+| `src/renderer/js/app/`        | Core application logic including state management and utilities                              |
+| `src/renderer/js/components/` | Reusable UI components for sidebar, layout, broadcast, and dialogs                           |
+| `src/renderer/js/data/`       | Static data definitions for AI services                                                      |
 
 ---
 
@@ -258,29 +265,29 @@ vicebrain/
 
 ### Core Application Files
 
-| File | Purpose | Key Functions |
-|------|---------|---------------|
-| `src/main/index.js` | Application entry point | Single instance lock, command-line switches, user agent patching |
-| `src/main/window.js` | Window management | BrowserWindow creation, session patching, webview wiring |
-| `src/main/ipc.js` | IPC communication | Prompt injection execution, view reloading |
-| `src/main/auth.js` | Authentication | OAuth handling, external browser for Google auth |
-| `src/main/session.js` | Session security | CSP/X-Frame removal, lock file cleanup |
-| `src/main/services.js` | Service configuration | Service definitions, Chrome user agent |
-| `src/preload/spoof.js` | Security bypass | Fingerprint spoofing, navigator property override |
+| File                   | Purpose                 | Key Functions                                                    |
+| ---------------------- | ----------------------- | ---------------------------------------------------------------- |
+| `src/main/index.js`    | Application entry point | Single instance lock, command-line switches, user agent patching |
+| `src/main/window.js`   | Window management       | BrowserWindow creation, session patching, webview wiring         |
+| `src/main/ipc.js`      | IPC communication       | Prompt injection execution, view reloading                       |
+| `src/main/auth.js`     | Authentication          | OAuth handling, external browser for Google auth                 |
+| `src/main/session.js`  | Session security        | CSP/X-Frame removal, lock file cleanup                           |
+| `src/main/services.js` | Service configuration   | Service definitions, Chrome user agent                           |
+| `src/preload/spoof.js` | Security bypass         | Fingerprint spoofing, navigator property override                |
 
 ### Frontend Files
 
-| File | Purpose | Key Functions |
-|------|---------|---------------|
-| `src/renderer/index.html` | Main HTML | DOM structure, dialogs, layout containers |
-| `src/renderer/css/styles.css` | Styling | Complete CSS with dark/light themes, responsive design |
-| `src/renderer/js/app/app.js` | Core logic | Theme toggle, language switch, service initialization |
-| `src/renderer/js/components/broadcast.js` | Broadcast mode | Prompt injection to all active services |
-| `src/renderer/js/components/sidebar.js` | Service management | Toggle services, favorites, custom services |
-| `src/renderer/js/components/layout.js` | Layout management | Column resize, grid mode, responsive layout |
-| `src/renderer/js/components/dialogs.js` | UI dialogs | Add service, confirm delete dialogs |
-| `src/renderer/js/app/i18n.js` | Internationalization | Spanish/English translations |
-| `src/renderer/js/app/storage.js` | Persistence | LocalStorage abstraction |
+| File                                      | Purpose              | Key Functions                                          |
+| ----------------------------------------- | -------------------- | ------------------------------------------------------ |
+| `src/renderer/index.html`                 | Main HTML            | DOM structure, dialogs, layout containers              |
+| `src/renderer/css/styles.css`             | Styling              | Complete CSS with dark/light themes, responsive design |
+| `src/renderer/js/app/app.js`              | Core logic           | Theme toggle, language switch, service initialization  |
+| `src/renderer/js/components/broadcast.js` | Broadcast mode       | Prompt injection to all active services                |
+| `src/renderer/js/components/sidebar.js`   | Service management   | Toggle services, favorites, custom services            |
+| `src/renderer/js/components/layout.js`    | Layout management    | Column resize, grid mode, responsive layout            |
+| `src/renderer/js/components/dialogs.js`   | UI dialogs           | Add service, confirm delete dialogs                    |
+| `src/renderer/js/app/i18n.js`             | Internationalization | Spanish/English translations                           |
+| `src/renderer/js/app/storage.js`          | Persistence          | LocalStorage abstraction                               |
 
 ### File Interactions
 
@@ -290,7 +297,7 @@ sequenceDiagram
     participant UI as Renderer (UI)
     participant IPC as Main Process
     participant WebView as AI Service WebView
-    
+
     User->>UI: Enter prompt in broadcast input
     User->>UI: Click "SEND" button
     UI->>IPC: invoke('inject-prompt', {viewId, prompt, autoSend})
@@ -348,7 +355,7 @@ flowchart LR
         B --> C[Session stored in partition]
         C --> D[IndexedDB persists session]
     end
-    
+
     subgraph "Persistence"
         D --> E[App restart]
         E --> F[Load partition on startup]
@@ -358,11 +365,11 @@ flowchart LR
 
 ### Data Storage
 
-| Storage Type | Location | Purpose |
-|--------------|----------|---------|
-| LocalStorage | Renderer process | UI preferences, enabled services, custom services |
-| Session Partition | Electron partitions | Persistent login sessions per AI service |
-| IndexedDB | Partitions directory | Service-specific database storage |
+| Storage Type      | Location             | Purpose                                           |
+| ----------------- | -------------------- | ------------------------------------------------- |
+| LocalStorage      | Renderer process     | UI preferences, enabled services, custom services |
+| Session Partition | Electron partitions  | Persistent login sessions per AI service          |
+| IndexedDB         | Partitions directory | Service-specific database storage                 |
 
 ---
 
@@ -370,21 +377,21 @@ flowchart LR
 
 ViceBrain comes pre-configured with 13 AI chat services:
 
-| Service | URL | Color | Status |
-|---------|-----|-------|--------|
-| Gemini | https://gemini.google.com/app | #4285f4 | Limited |
-| ChatGPT | https://chatgpt.com/ | #10a37f | Active |
-| Claude | https://claude.ai/new | #cc785c | Active |
-| Kimi | https://www.kimi.com/ | #8b5cf6 | Active |
-| DeepSeek | https://chat.deepseek.com/ | #06b6d4 | Active |
-| Qwen | https://chat.qwen.ai/ | #f59e0b | Pending |
-| Mistral | https://chat.mistral.ai/chat | #f97316 | Limited |
-| Grok | https://grok.com/ | #c8d0da | Active |
-| Z | https://chat.z.ai/ | #7c3aed | Active |
-| Copilot | https://copilot.microsoft.com/ | #00a4ef | Limited |
-| Perplexity | https://www.perplexity.ai/ | #f59e0b | Active |
-| Meta AI | https://www.meta.ai/ | #0081fb | Active |
-| Luzia | https://chat.luzia.com/ | #06b6d4 | Limited |
+| Service    | URL                            | Color   | Status  |
+| ---------- | ------------------------------ | ------- | ------- |
+| Gemini     | https://gemini.google.com/app  | #4285f4 | Limited |
+| ChatGPT    | https://chatgpt.com/           | #10a37f | Active  |
+| Claude     | https://claude.ai/new          | #cc785c | Active  |
+| Kimi       | https://www.kimi.com/          | #8b5cf6 | Active  |
+| DeepSeek   | https://chat.deepseek.com/     | #06b6d4 | Active  |
+| Qwen       | https://chat.qwen.ai/          | #f59e0b | Pending |
+| Mistral    | https://chat.mistral.ai/chat   | #f97316 | Limited |
+| Grok       | https://grok.com/              | #c8d0da | Active  |
+| Z          | https://chat.z.ai/             | #7c3aed | Active  |
+| Copilot    | https://copilot.microsoft.com/ | #00a4ef | Limited |
+| Perplexity | https://www.perplexity.ai/     | #f59e0b | Active  |
+| Meta AI    | https://www.meta.ai/           | #0081fb | Active  |
+| Luzia      | https://chat.luzia.com/        | #06b6d4 | Limited |
 
 ---
 
@@ -394,10 +401,10 @@ ViceBrain comes pre-configured with 13 AI chat services:
 
 ViceBrain does not require environment variables for basic operation. However, for advanced configuration:
 
-| Variable | Description | Default |
-|----------|-------------|---------|
+| Variable                             | Description               | Default |
+| ------------------------------------ | ------------------------- | ------- |
 | `ELECTRON_DISABLE_SECURITY_WARNINGS` | Disable security warnings | Not set |
-| `ELECTRON_ENABLE_LOGGING` | Enable logging to console | Not set |
+| `ELECTRON_ENABLE_LOGGING`            | Enable logging to console | Not set |
 
 ### Build Configuration
 
@@ -428,7 +435,7 @@ graph TB
         B --> E[session.js]
         E --> F[services.js]
     end
-    
+
     subgraph "Renderer UI"
         G[app.js] --> H[components/]
         G --> I[data/]
@@ -439,11 +446,11 @@ graph TB
         G --> N[i18n.js]
         G --> O[storage.js]
     end
-    
+
     subgraph "External Services"
         P[AI WebViews]
     end
-    
+
     B --> P
     J --> P
     C --> P
@@ -455,21 +462,21 @@ graph TB
 
 ### Common Issues
 
-| Issue | Solution |
-|-------|----------|
+| Issue                   | Solution                                                   |
+| ----------------------- | ---------------------------------------------------------- |
 | Application won't start | Run `npm install` to ensure all dependencies are installed |
-| Login not persisting | Clear partitions in AppData/ViceBrain/Partitions |
-| Services not loading | Check internet connection and firewall settings |
-| Prompt injection fails | Wait for service to fully load before sending |
-| Window too large/small | Use column resize handles or switch to grid mode |
+| Login not persisting    | Clear partitions in AppData/ViceBrain/Partitions           |
+| Services not loading    | Check internet connection and firewall settings            |
+| Prompt injection fails  | Wait for service to fully load before sending              |
+| Window too large/small  | Use column resize handles or switch to grid mode           |
 
 ### Session Storage Locations
 
-| Operating System | Path |
-|------------------|------|
-| Windows | `%APPDATA%\vicebrain\Partitions\` |
-| macOS | `~/Library/Application Support/vicebrain/Partitions/` |
-| Linux | `~/.config/vicebrain/Partitions/` |
+| Operating System | Path                                                  |
+| ---------------- | ----------------------------------------------------- |
+| Windows          | `%APPDATA%\vicebrain\Partitions\`                     |
+| macOS            | `~/Library/Application Support/vicebrain/Partitions/` |
+| Linux            | `~/.config/vicebrain/Partitions/`                     |
 
 ### Cache & Data Clearing
 
@@ -536,13 +543,13 @@ ViceBrain includes several security bypass mechanisms for embedding AI services:
 
 ViceBrain is provided "AS IS" for educational and research purposes. The original author and contributors are **NOT LIABLE** for:
 
-| Consecuencia / Consequence | Descripción / Description |
-|---------------------------|--------------------------|
-| ToS Violations | Violations of third-party Terms of Service |
-| Account Suspension | Suspension or blocking of accounts on AI services |
-| Legal Implications | Legal consequences under computer fraud laws (CFAA, DMCA, etc.) |
-| Direct/Indirect Damages | Any economic loss, data loss, or business interruption |
-| Unauthorized Modifications | Issues arising from modified versions |
+| Consecuencia / Consequence | Descripción / Description                                       |
+| -------------------------- | --------------------------------------------------------------- |
+| ToS Violations             | Violations of third-party Terms of Service                      |
+| Account Suspension         | Suspension or blocking of accounts on AI services               |
+| Legal Implications         | Legal consequences under computer fraud laws (CFAA, DMCA, etc.) |
+| Direct/Indirect Damages    | Any economic loss, data loss, or business interruption          |
+| Unauthorized Modifications | Issues arising from modified versions                           |
 
 **USE AT YOUR OWN RISK. USO BAJO SU PROPIO RIESGO.**
 
@@ -559,21 +566,21 @@ The user is **solely responsible** for ensuring that their use of this software 
 
 ViceBrain interacts with services owned by third-party companies:
 
-| Company | Services |
-|---------|----------|
-| OpenAI | ChatGPT |
-| Google | Gemini |
-| Anthropic | Claude |
-| Moonshot AI | Kimi |
-| DeepSeek AI | DeepSeek |
-| Alibaba Cloud | Qwen |
-| Mistral AI | Mistral |
-| xAI | Grok |
-| Z AI | Z |
-| Microsoft | Copilot |
+| Company       | Services   |
+| ------------- | ---------- |
+| OpenAI        | ChatGPT    |
+| Google        | Gemini     |
+| Anthropic     | Claude     |
+| Moonshot AI   | Kimi       |
+| DeepSeek AI   | DeepSeek   |
+| Alibaba Cloud | Qwen       |
+| Mistral AI    | Mistral    |
+| xAI           | Grok       |
+| Z AI          | Z          |
+| Microsoft     | Copilot    |
 | Perplexity AI | Perplexity |
-| Meta | Meta AI |
-| Luzia | Luzia |
+| Meta          | Meta AI    |
+| Luzia         | Luzia      |
 
 Use of this application may violate these services' Terms of Service. The user assumes all risks.
 
@@ -631,14 +638,14 @@ Contributions are welcome! This project is for educational purposes, but we appr
 
 ### Contribution Ideas
 
-| Area | Ideas |
-|------|-------|
+| Area                | Ideas                                        |
+| ------------------- | -------------------------------------------- |
 | **New AI Services** | Add support for additional AI chat platforms |
-| **UI/UX** | Improve layouts, themes, accessibility |
-| **i18n** | Add more language translations |
-| **Bug Fixes** | Fix issues with prompt injection, sessions |
-| **Performance** | Optimize memory usage, loading times |
-| **Documentation** | Improve README, add tutorials |
+| **UI/UX**           | Improve layouts, themes, accessibility       |
+| **i18n**            | Add more language translations               |
+| **Bug Fixes**       | Fix issues with prompt injection, sessions   |
+| **Performance**     | Optimize memory usage, loading times         |
+| **Documentation**   | Improve README, add tutorials                |
 
 ### Code Style
 
@@ -649,16 +656,17 @@ Contributions are welcome! This project is for educational purposes, but we appr
 
 ### Development Commands
 
-| Command | Description |
-|---------|-------------|
-| `npm start` | Run app in development mode |
-| `npm run build:win` | Build for Windows |
-| `npm run build:mac` | Build for macOS |
-| `npm run build:linux` | Build for Linux |
+| Command               | Description                 |
+| --------------------- | --------------------------- |
+| `npm start`           | Run app in development mode |
+| `npm run build:win`   | Build for Windows           |
+| `npm run build:mac`   | Build for macOS             |
+| `npm run build:linux` | Build for Linux             |
 
 ### Reporting Issues
 
 When reporting bugs, please include:
+
 - Operating system and version
 - Steps to reproduce the issue
 - Expected vs actual behavior
