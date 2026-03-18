@@ -70,12 +70,15 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 .tb-btn {
   background: transparent; border: 1px solid var(--bord2); border-radius: 5px;
   color: var(--mid); cursor: pointer; font-family: 'Space Mono', monospace;
-  font-size: .58rem; padding: 3px 9px; letter-spacing: .06em;
+  font-size: .58rem; padding: 6px 10px; letter-spacing: .06em;
   transition: all .18s; display: flex; align-items: center; gap: 4px;
-  white-space: nowrap; flex-shrink: 0;
+  white-space: nowrap; flex-shrink: 0; height: 32px; box-sizing: border-box;
 }
 .tb-btn:hover { border-color: var(--accent-cyan); color: var(--txt); }
 .tb-btn.on    { background: var(--accent-purple); border-color: var(--accent-purple); color: #fff; }
+#langToggle, #themeToggle, #toggleSidebar { padding: 6px 10px; }
+#langToggle span, #themeToggle span, #toggleSidebar span { font-size: 1rem; }
+#sidebarIcon { margin-right: 4px; }
 
 /* layout mode group */
 .mode-group { display: flex; border: 1px solid var(--bord2); border-radius: 5px; overflow: hidden; }
@@ -133,15 +136,8 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
   font-size: .58rem; color: var(--dim); letter-spacing: .1em; text-transform: uppercase;
   border-bottom: 1px solid var(--bord); flex-shrink: 0;
   display: flex; justify-content: space-between; align-items: center;
+  height: 42px;
 }
-.lang-selector {
-  display: flex; align-items: center; gap: 4px;
-  cursor: pointer; padding: 3px 6px; border-radius: 4px;
-  font-size: .7rem; transition: background .2s;
-}
-.lang-selector:hover { background: var(--surf2); }
-.lang-selector span:first-child { font-size: .9rem; }
-.lang-selector span:last-child { color: var(--mid); }
 .sb-list { flex: 1; overflow-y: auto; padding: 6px 8px; }
 .sb-list::-webkit-scrollbar { width: 3px; }
 .sb-list::-webkit-scrollbar-thumb { background: var(--bord2); border-radius: 3px; }
@@ -435,11 +431,14 @@ textarea:focus { border-color: var(--accent-cyan); }
   <div class="active-dots" id="activeDots"></div>
 
   <div class="tb-right">
+    <button class="tb-btn" id="langToggle" onclick="toggleLanguage()" title="Cambiar idioma">
+      <span id="currentLangFlag">🇪🇸</span>
+    </button>
     <button class="tb-btn" id="themeToggle" onclick="toggleTheme()" title="Cambiar tema">
       <span id="themeIcon">🌙</span>
     </button>
     <button class="tb-btn on" id="toggleSidebar" onclick="toggleSidebar()">
-      <span class="arr">◀</span> <span id="lblServiciosBtn">Servicios</span>
+      <span id="sidebarIcon">☰</span> <span id="lblServiciosBtn">Servicios</span>
     </button>
   </div>
 </div>
@@ -451,10 +450,6 @@ textarea:focus { border-color: var(--accent-cyan); }
   <div id="sidebar">
     <div class="sb-head">
       <span id="lblServicios">// Servicios activos</span>
-      <div class="lang-selector" onclick="toggleLanguage()">
-        <span id="currentLangFlag">🇪🇸</span>
-        <span id="currentLangLabel">ES</span>
-      </div>
     </div>
     <div class="sb-list" id="sbList"></div>
     <div class="sb-login-note" id="loginNote">
@@ -654,13 +649,13 @@ const translations = {
     promptVacio: '⚠ Escribe un prompt primero',
     noHayServicios: '⚠ No hay servicios activos',
     promptEnviado: '✓ Prompt enviado a',
-    modelos: 'modelo',
+    modelo: 'modelo',
     modelosPlural: 'modelos',
     ok: 'ok',
     fallaron: 'fallaron',
     serviciosBtn: 'Servicios',
-    badgeLimited: 'Limited',
-    badgePending: 'Pending'
+    badgeLimited: 'Limitado',
+    badgePending: 'Pendiente'
   },
   en: {
     servicios: '// Active services',
@@ -721,7 +716,6 @@ function toggleLanguage() {
 
 function updateLanguageUI() {
   document.getElementById('currentLangFlag').textContent = currentLang === 'es' ? '🇪🇸' : '🇬🇧';
-  document.getElementById('currentLangLabel').textContent = currentLang.toUpperCase();
 }
 
 function updateAllTranslations() {
@@ -830,11 +824,30 @@ loadCustomServices();
 loadFavorites();
 try { useIcons = localStorage.getItem('useIcons') !== 'false'; } catch (e) {}
 
-SERVICES.forEach(s => {
-  enabled[s.id]   = true;
-  colWidths[s.id] = DEF_WIDTH;
-  if (s.favorite) favorites.add(s.id);
-});
+// Load saved enabled services or default to first 3
+try {
+  const savedEnabled = localStorage.getItem('enabledServices');
+  if (savedEnabled) {
+    const enabledArr = JSON.parse(savedEnabled);
+    SERVICES.forEach(s => {
+      enabled[s.id] = enabledArr.includes(s.id);
+      colWidths[s.id] = DEF_WIDTH;
+      if (s.favorite) favorites.add(s.id);
+    });
+  } else {
+    SERVICES.forEach((s, i) => {
+      enabled[s.id] = i < 3;
+      colWidths[s.id] = DEF_WIDTH;
+      if (s.favorite) favorites.add(s.id);
+    });
+  }
+} catch(e) {
+  SERVICES.forEach((s, i) => {
+    enabled[s.id] = i < 3;
+    colWidths[s.id] = DEF_WIDTH;
+    if (s.favorite) favorites.add(s.id);
+  });
+}
 
 function getOrderedServices() {
   const favs = SERVICES.filter(s => favorites.has(s.id));
@@ -923,13 +936,19 @@ function toggleSidebar() {
   sidebarOpen = !sidebarOpen;
   document.getElementById('sidebar').classList.toggle('collapsed', !sidebarOpen);
   document.getElementById('toggleSidebar').classList.toggle('on', !sidebarOpen);
-  const arr = document.querySelector('#toggleSidebar .arr');
-  if (arr) arr.style.transform = sidebarOpen ? '' : 'rotate(180deg)';
+  const icon = document.getElementById('sidebarIcon');
+  if (icon) icon.textContent = sidebarOpen ? '☰' : '☱';
+}
+
+function saveEnabledServices() {
+  const enabledArr = Object.keys(enabled).filter(id => enabled[id]);
+  localStorage.setItem('enabledServices', JSON.stringify(enabledArr));
 }
 
 function toggleService(id) {
   enabled[id] = !enabled[id];
   document.getElementById('sbrow-' + id).classList.toggle('on', enabled[id]);
+  saveEnabledServices();
   rebuildGrid();
 }
 
@@ -938,6 +957,7 @@ function toggleAll(on) {
     enabled[s.id] = on;
     document.getElementById('sbrow-' + s.id).classList.toggle('on', on);
   });
+  saveEnabledServices();
   rebuildGrid();
 }
 
