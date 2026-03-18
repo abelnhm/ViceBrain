@@ -600,7 +600,69 @@ MIT License with Educational Use Clauses - See [LICENSE](LICENSE) file for compl
 
 ## Contributing
 
-Contributions are welcome. Please ensure all tests pass before submitting pull requests.
+Contributions are welcome! This project is for educational purposes, but we appreciate improvements.
+
+### How to Contribute
+
+1. **Fork the repository** on GitHub
+2. **Clone your fork locally**
+   ```bash
+   git clone https://github.com/YOUR-USERNAME/ViceBrain.git
+   cd ViceBrain
+   ```
+3. **Create a feature branch**
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+4. **Install dependencies**
+   ```bash
+   npm install
+   ```
+5. **Make your changes** and test with `npm start`
+6. **Commit your changes** with clear commit messages
+   ```bash
+   git commit -m "Add: brief description of changes"
+   ```
+7. **Push to your fork**
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+8. **Open a Pull Request** on the original repository
+
+### Contribution Ideas
+
+| Area | Ideas |
+|------|-------|
+| **New AI Services** | Add support for additional AI chat platforms |
+| **UI/UX** | Improve layouts, themes, accessibility |
+| **i18n** | Add more language translations |
+| **Bug Fixes** | Fix issues with prompt injection, sessions |
+| **Performance** | Optimize memory usage, loading times |
+| **Documentation** | Improve README, add tutorials |
+
+### Code Style
+
+- Use **Vanilla JavaScript** (no frameworks)
+- Follow existing naming conventions
+- Comment complex logic
+- Test changes before submitting
+
+### Development Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm start` | Run app in development mode |
+| `npm run build:win` | Build for Windows |
+| `npm run build:mac` | Build for macOS |
+| `npm run build:linux` | Build for Linux |
+
+### Reporting Issues
+
+When reporting bugs, please include:
+- Operating system and version
+- Steps to reproduce the issue
+- Expected vs actual behavior
+- Screenshots if applicable
 
 ---
 
