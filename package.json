@@ -32,19 +32,19 @@
           ]
         }
       ],
-      "icon": "assets/windows/icon.ico"
+      "icon": "assets/icons/windows/icon.ico"
     },
     "mac": {
       "target": [
         "dmg"
       ],
-      "icon": "assets/macos/icon.icns"
+      "icon": "assets/icons/macos/icon.icns"
     },
     "linux": {
       "target": [
         "AppImage"
       ],
-      "icon": "assets/linux/icons"
+      "icon": "assets/icons/linux/icons"
     }
   },
   "devDependencies": {

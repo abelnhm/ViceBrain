@@ -157,12 +157,12 @@ function createWindow() {
     title: 'ViceBrain',
   });
 
-  // Set window icon based on platform (only if assets exist)
-  if (fs.existsSync(path.join(__dirname, 'assets/windows/icon.ico'))) {
+  // Set window icon based on platform (only if icons exist)
+  if (fs.existsSync(path.join(__dirname, 'assets/icons/windows/icon.ico'))) {
     if (process.platform === 'win32') {
-      win.setIcon(path.join(__dirname, 'assets/windows/icon.ico'));
+      win.setIcon(path.join(__dirname, 'assets/icons/windows/icon.ico'));
     } else if (process.platform === 'linux') {
-      win.setIcon(path.join(__dirname, 'assets/linux/icons/512x512.png'));
+      win.setIcon(path.join(__dirname, 'assets/icons/linux/icons/512x512.png'));
     }
   }
 
