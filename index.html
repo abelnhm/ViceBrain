@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>ViceBrain</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Dark Mode (default) - Vice City neon style */
+:root {
+  --bg:    #121212;
+  --surf:  #1E1E1E;
+  --surf2: #252525;
+  --bord:  #333333;
+  --bord2: #404040;
+  --txt:   #FFFFFF;
+  --dim:   #666666;
+  --mid:   #888888;
+  --accent-purple: #5B2C6F;
+  --accent-pink: #FF1493;
+  --accent-cyan: #00FFFF;
+  --accent-yellow: #FFD700;
+  --r: 8px;
+  --mode: 'dark';
+}
+[data-theme="light"] {
+  --bg:    #FFFFFF;
+  --surf:  #F5F5F5;
+  --surf2: #E8E8E8;
+  --bord:  #E0E0E0;
+  --bord2: #CCCCCC;
+  --txt:   #212121;
+  --dim:   #999999;
+  --mid:   #666666;
+  --accent-purple: #5B2C6F;
+  --accent-pink: #FF69B4;
+  --accent-cyan: #00CED1;
+  --accent-yellow: #FFC107;
+  --mode: 'light';
+}
+
+html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--txt); font-family: 'Syne', sans-serif; transition: background .3s, color .3s; }
+
+/* ══════════════════════════════════════════════════════════════
+   TITLEBAR
+══════════════════════════════════════════════════════════════ */
+#titlebar {
+  height: 42px; display: flex; align-items: center; gap: 8px;
+  padding: 0 14px; background: var(--surf); border-bottom: 1px solid var(--bord);
+  -webkit-app-region: drag; flex-shrink: 0; user-select: none;
+}
+.logo {
+  width: 22px; height: 22px; border-radius: 5px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink), var(--accent-cyan));
+  animation: spin 10s linear infinite; -webkit-app-region: no-drag;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.title-txt { font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-cyan); margin-left: 4px; }
+.title-txt span { color: var(--accent-pink); font-weight: 400; }
+
+/* separator */
+.sep { width: 1px; height: 18px; background: var(--bord2); flex-shrink: 0; }
+
+.tb-right { margin-left: auto; display: flex; align-items: center; gap: 6px; -webkit-app-region: no-drag; }
+
+/* shared toolbar button style */
+.tb-btn {
+  background: transparent; border: 1px solid var(--bord2); border-radius: 5px;
+  color: var(--mid); cursor: pointer; font-family: 'Space Mono', monospace;
+  font-size: .58rem; padding: 3px 9px; letter-spacing: .06em;
+  transition: all .18s; display: flex; align-items: center; gap: 4px;
+  white-space: nowrap; flex-shrink: 0;
+}
+.tb-btn:hover { border-color: var(--accent-cyan); color: var(--txt); }
+.tb-btn.on    { background: var(--accent-purple); border-color: var(--accent-purple); color: #fff; }
+
+/* layout mode group */
+.mode-group { display: flex; border: 1px solid var(--bord2); border-radius: 5px; overflow: hidden; }
+.mode-btn {
+  background: transparent; border: none; border-right: 1px solid var(--bord2);
+  color: var(--dim); cursor: pointer; font-family: 'Space Mono', monospace;
+  font-size: .58rem; padding: 3px 10px; letter-spacing: .06em; transition: all .18s;
+  display: flex; align-items: center; gap: 4px;
+}
+.mode-btn:last-child { border-right: none; }
+.mode-btn:hover { color: var(--txt); background: var(--surf2); }
+.mode-btn.active { background: var(--accent-purple); color: #fff; }
+
+/* grid cols control */
+.grid-ctrl { display: flex; align-items: center; gap: 4px; -webkit-app-region: no-drag; }
+.grid-ctrl label { font-family: 'Space Mono', monospace; font-size: .55rem; color: var(--dim); }
+.grid-ctrl .gcbtn {
+  width: 20px; height: 20px; background: var(--surf2); border: 1px solid var(--bord2);
+  border-radius: 4px; color: var(--mid); cursor: pointer; font-size: .8rem; line-height: 1;
+  display: flex; align-items: center; justify-content: center; transition: all .15s;
+}
+.grid-ctrl .gcbtn:hover { color: var(--txt); border-color: var(--mid); }
+.grid-ctrl .gcval {
+  font-family: 'Space Mono', monospace; font-size: .65rem; color: var(--txt);
+  min-width: 14px; text-align: center;
+}
+
+/* sidebar toggle arrow */
+#toggleSidebar .arr { display: inline-block; transition: transform .25s ease; }
+#toggleSidebar.on .arr { transform: rotate(180deg); }
+
+/* active dots */
+.active-dots { display: flex; gap: 4px; align-items: center; }
+.adot { width: 6px; height: 6px; border-radius: 50%; animation: dp 2.5s ease-in-out infinite; }
+@keyframes dp { 0%,100%{opacity:.3} 50%{opacity:1} }
+
+/* ══════════════════════════════════════════════════════════════
+   BODY
+══════════════════════════════════════════════════════════════ */
+#body { display: flex; height: calc(100vh - 42px); }
+
+/* ══════════════════════════════════════════════════════════════
+   SIDEBAR
+══════════════════════════════════════════════════════════════ */
+#sidebar {
+  width: 220px; flex-shrink: 0;
+  background: var(--surf); border-right: 1px solid var(--bord);
+  display: flex; flex-direction: column;
+  transition: width .28s cubic-bezier(.4,0,.2,1), opacity .22s ease, border-color .28s ease;
+  overflow: hidden;
+}
+#sidebar.collapsed { width: 0; opacity: 0; pointer-events: none; border-right-color: transparent; }
+.sb-head {
+  padding: 11px 14px 8px; font-family: 'Space Mono', monospace;
+  font-size: .58rem; color: var(--dim); letter-spacing: .1em; text-transform: uppercase;
+  border-bottom: 1px solid var(--bord); flex-shrink: 0;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.lang-selector {
+  display: flex; align-items: center; gap: 4px;
+  cursor: pointer; padding: 3px 6px; border-radius: 4px;
+  font-size: .7rem; transition: background .2s;
+}
+.lang-selector:hover { background: var(--surf2); }
+.lang-selector span:first-child { font-size: .9rem; }
+.lang-selector span:last-child { color: var(--mid); }
+.sb-list { flex: 1; overflow-y: auto; padding: 6px 8px; }
+.sb-list::-webkit-scrollbar { width: 3px; }
+.sb-list::-webkit-scrollbar-thumb { background: var(--bord2); border-radius: 3px; }
+.svc-row {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 8px; border-radius: 6px; cursor: pointer;
+  transition: background .15s; user-select: none; margin-bottom: 2px;
+}
+.svc-row:hover { background: var(--surf2); }
+.svc-row .svc-fav { 
+  font-size: .65rem; cursor: pointer; color: var(--mid); transition: color .2s;
+  margin-right: 2px; flex-shrink: 0;
+}
+.svc-row .svc-fav:hover, .svc-row .svc-fav.active { color: #fbbf24; }
+.svc-dot  { width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; }
+.svc-icon { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; object-fit: contain; background: #fff; padding: 1px; }
+.svc-name { font-size: .78rem; font-weight: 600; flex: 1; display: flex; align-items: center; gap: 5px; }
+.svc-delete {
+  font-size: .65rem; cursor: pointer; color: var(--mid); flex-shrink: 0;
+  padding: 2px 4px; border-radius: 3px;
+}
+.svc-delete:hover { background: #7f1d1d; color: var(--accent-pink); }
+.svc-badge {
+  font-size: .6rem; padding: 2px 6px; border-radius: 3px; font-weight: 600;
+  background: var(--accent-purple); color: var(--accent-cyan); flex-shrink: 0;
+}
+.svc-badge.limited { background: var(--accent-yellow); color: #000; }
+.svc-badge.pending { background: var(--accent-purple); color: var(--accent-cyan); }
+.svc-toggle {
+  width: 28px; height: 16px; border-radius: 8px; background: var(--bord2);
+  position: relative; flex-shrink: 0; transition: background .2s;
+}
+.svc-toggle::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 12px; height: 12px; border-radius: 50%; background: var(--dim);
+  transition: transform .2s, background .2s;
+}
+.svc-row.on .svc-toggle { background: var(--accent-purple); }
+.svc-row.on .svc-toggle::after { transform: translateX(12px); background: var(--accent-cyan); }
+.sb-login-note {
+  padding: 10px 12px; margin: 0 8px 8px; background: var(--accent-yellow);
+  border-radius: 5px; font-size: .75rem; color: #000;
+  line-height: 1.4; border: 1px solid var(--accent-yellow);
+}
+.sb-footer { padding: 9px 12px; border-top: 1px solid var(--bord); flex-shrink: 0; display: flex; flex-direction: column; gap: 5px; }
+.sb-footer button {
+  width: 100%; padding: 6px; background: var(--surf2); border: 1px solid var(--bord2);
+  border-radius: 5px; color: var(--mid); font-family: 'Space Mono', monospace;
+  font-size: .58rem; cursor: pointer; transition: all .18s; letter-spacing: .05em;
+}
+.sb-footer button:hover { border-color: var(--accent-cyan); color: var(--txt); }
+
+/* ══════════════════════════════════════════════════════════════
+   MAIN AREA
+══════════════════════════════════════════════════════════════ */
+#main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+
+/* ══════════════════════════════════════════════════════════════
+   VIEWPORT — wraps the scrollable grid
+══════════════════════════════════════════════════════════════ */
+#viewport { flex: 1; min-height: 0; overflow: auto; padding: 8px 8px 0; }
+#viewport::-webkit-scrollbar { width: 6px; height: 6px; }
+#viewport::-webkit-scrollbar-track { background: transparent; }
+#viewport::-webkit-scrollbar-thumb { background: var(--bord2); border-radius: 3px; }
+
+/* ══════════════════════════════════════════════════════════════
+   GRID — layout controlled by JS
+══════════════════════════════════════════════════════════════ */
+#grid { display: flex; gap: 8px; height: 100%; }
+
+/* Column mode: horizontal row, each col has explicit width */
+#grid.mode-cols { flex-direction: row; align-items: stretch; }
+#grid.mode-cols .col { flex-shrink: 0; flex-grow: 1; }
+
+/* Grid (tile) mode: wrapping grid */
+#grid.mode-grid {
+  flex-wrap: wrap;
+  align-content: flex-start;
+  height: auto; /* allow wrapping */
+}
+#grid.mode-grid .col { 
+  flex: 1 1 calc((100% - var(--gap) * (var(--gcols) - 1)) / var(--gcols)); 
+  max-width: calc((100% - var(--gap) * (var(--gcols) - 1)) / var(--gcols)); 
+  min-height: 400px;
+  height: auto;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   COLUMN CARD
+══════════════════════════════════════════════════════════════ */
+.col {
+  display: flex; flex-direction: column;
+  border: 1px solid var(--bord); border-radius: var(--r);
+  overflow: hidden; background: var(--surf);
+  animation: rise .32s ease both;
+  position: relative;
+  min-width: 200px;
+}
+@keyframes rise { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+.col.flash { animation: flashborder .6s ease; }
+@keyframes flashborder {
+  0%,100% { box-shadow: none; }
+  40%     { box-shadow: 0 0 24px var(--accent,#fff3), inset 0 0 10px var(--accent,#fff1); }
+}
+
+/* ── CHROME BAR ── */
+.chrome {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 8px; background: var(--surf2);
+  border-bottom: 1px solid var(--bord); flex-shrink: 0;
+}
+.tls { display: flex; gap: 4px; }
+.tl  { width: 9px; height: 9px; border-radius: 50%; }
+.tl-r{background:#ff5f57}.tl-y{background:#febc2e}.tl-g{background:#28c840}
+
+.url-bar {
+  flex: 1; display: flex; align-items: center; gap: 4px;
+  background: #060a0f; border: 1px solid var(--bord2); border-radius: 3px;
+  padding: 3px 7px; font-family: 'Space Mono', monospace; font-size: .52rem;
+  color: var(--mid); overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+.lock { opacity: .45; flex-shrink: 0; }
+
+/* width control buttons — only visible in column mode */
+.w-ctrl { display: flex; gap: 2px; flex-shrink: 0; }
+.w-btn {
+  width: 19px; height: 19px; border-radius: 3px; border: 1px solid var(--bord2);
+  background: transparent; color: var(--dim); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .7rem; line-height: 1; transition: all .15s; flex-shrink: 0;
+  font-family: 'Space Mono', monospace;
+}
+.w-btn:hover { color: var(--txt); background: var(--bord2); }
+.w-btn:active { transform: scale(.9); }
+/* hide width controls in grid mode */
+.mode-grid .w-ctrl { display: none; }
+
+.reload-btn {
+  width: 19px; height: 19px; border-radius: 3px; border: 1px solid var(--bord2);
+  background: transparent; color: var(--dim); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem; transition: all .15s; flex-shrink: 0;
+}
+.reload-btn:hover { color: var(--txt); background: var(--bord2); }
+
+.ai-tag {
+  font-family: 'Space Mono', monospace; font-size: .5rem; font-weight: 700;
+  padding: 2px 5px; border-radius: 3px; flex-shrink: 0;
+}
+
+/* ── DRAG RESIZE HANDLE (column mode only) ── */
+.resize-handle {
+  position: absolute; right: -5px; top: 0; bottom: 0;
+  width: 10px; cursor: col-resize; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+}
+.resize-handle::after {
+  content: ''; width: 3px; height: 40px; border-radius: 2px;
+  background: var(--bord2); transition: background .15s, height .15s;
+}
+.resize-handle:hover::after,
+.resize-handle.dragging::after { background: var(--mid); height: 60px; }
+/* hide in grid mode */
+.mode-grid .resize-handle { display: none; }
+
+/* ── LOADBAR ── */
+.loadbar { height: 2px; width: 100%; flex-shrink: 0; }
+.loadbar.loading { animation: lanim 1.4s ease-in-out infinite; }
+@keyframes lanim { 0%{opacity:0;width:0%} 20%{opacity:1} 80%{width:90%} 100%{opacity:0;width:100%} }
+
+/* ── WEBVIEW ── */
+.col webview { flex: 1; min-height: 0; display: flex; }
+
+/* ── STATUS STRIP ── */
+.statusbar {
+  height: 18px; display: flex; align-items: center; padding: 0 8px;
+  border-top: 1px solid var(--bord); gap: 6px; flex-shrink: 0;
+}
+.stsdot { width: 5px; height: 5px; border-radius: 50%; background: var(--dim); }
+.stsdot.ready   { background: #28c840; }
+.stsdot.loading { background: #febc2e; animation: dp 1s infinite; }
+.stsdot.error   { background: #ff5f57; }
+.stslabel { flex:1; font-family: 'Space Mono', monospace; font-size: .48rem; color: var(--dim);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ── GOOGLE AUTH HINT ── */
+.google-hint {
+  display: none; position: absolute; bottom: 20px; left: 0; right: 0;
+  background: #0c1e30; border-top: 1px solid #2a4060;
+  padding: 7px 10px; font-family: 'Space Mono', monospace; font-size: .58rem;
+  color: #7aafd4; gap: 8px; align-items: center; z-index: 10;
+}
+.google-hint.show { display: flex; }
+.google-hint button {
+  margin-left: auto; padding: 3px 8px; background: #1a3a55; border: 1px solid #2a5070;
+  border-radius: 4px; color: #7aafd4; font-family: 'Space Mono', monospace;
+  font-size: .56rem; cursor: pointer; white-space: nowrap;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   EMPTY STATE
+══════════════════════════════════════════════════════════════ */
+#empty {
+  display: none; flex: 1; align-items: center; justify-content: center;
+  flex-direction: column; gap: 10px; color: var(--dim);
+}
+#empty.show { display: flex; }
+#empty p { font-family: 'Space Mono', monospace; font-size: .72rem; }
+
+/* ══════════════════════════════════════════════════════════════
+   BOTTOM PANEL
+══════════════════════════════════════════════════════════════ */
+#bottom {
+  display: flex; gap: 10px; align-items: stretch;
+  padding: 8px 8px 10px; background: var(--surf);
+  border-top: 1px solid var(--bord); flex-shrink: 0;
+}
+.prompt-wrap { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+.row-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.meta-lbl { font-family: 'Space Mono', monospace; font-size: .53rem; color: var(--dim);
+  letter-spacing: .1em; text-transform: uppercase; }
+.autosend-wrap { margin-left: auto; display: flex; align-items: center; gap: 5px;
+  font-family: 'Space Mono', monospace; font-size: .56rem; color: var(--mid); cursor: pointer; }
+.autosend-wrap input { accent-color: var(--accent-cyan); cursor: pointer; }
+textarea {
+  width: 100%; background: var(--surf2); border: 1px solid var(--bord2); border-radius: 5px;
+  color: var(--txt); font-family: 'Syne', sans-serif; font-size: 1rem; line-height: 1.6;
+  padding: 10px 13px; resize: none; min-height: 70px; max-height: 160px; outline: none;
+  transition: border-color .2s; -webkit-user-select: text; user-select: text;
+}
+textarea::placeholder { color: var(--dim); }
+textarea:focus { border-color: var(--accent-cyan); }
+#sendBtn {
+  flex-shrink: 0; width: 90px;
+  background: var(--accent-purple);
+  border: 1px solid var(--accent-purple); border-radius: 5px;
+  color: #fff; font-family: 'Space Mono', monospace;
+  font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  transition: all .18s;
+  height: 100%;
+}
+#sendBtn:hover:not(:disabled) { border-color:var(--accent-cyan); transform:translateY(-1px); }
+#sendBtn:active:not(:disabled) { transform:translateY(0); }
+#sendBtn:disabled { opacity:.4; cursor:not-allowed; }
+.btn-dots { display:flex; gap:3px; flex-wrap:wrap; justify-content:center; max-width:54px; }
+.btn-dot  { width:5px; height:5px; border-radius:50%; }
+
+/* ══════════════════════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════════════════════ */
+#toast {
+  position: fixed; bottom: 82px; left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: #0c1a28; border: 1px solid #253a55; border-radius: 5px;
+  padding: 7px 15px; font-family: 'Space Mono', monospace; font-size: .6rem;
+  color: #7aafd4; box-shadow: 0 6px 24px #00000050; opacity: 0;
+  transition: opacity .22s, transform .22s; z-index: 9999;
+  white-space: nowrap; pointer-events: none;
+}
+#toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ══ TITLEBAR ══════════════════════════════════════════════════════════ -->
+<div id="titlebar">
+  <div class="logo"></div>
+  <div class="title-txt">ViceBrain</div>
+  <div class="sep"></div>
+
+  <!-- Layout mode toggle -->
+  <div class="mode-group" title="Modo de visualización">
+    <button class="mode-btn active" id="btnCols" onclick="setLayout('cols')">
+      ▐▐▐ <span id="lblCols">Columnas</span>
+    </button>
+    <button class="mode-btn" id="btnGrid" onclick="setLayout('grid')">
+      ⊞ <span id="lblGrid">Cuadrícula</span>
+    </button>
+  </div>
+
+  <!-- Grid columns control (only visible in grid mode) -->
+  <div class="grid-ctrl" id="gridCtrl" style="display:none">
+    <label>cols:</label>
+    <button class="gcbtn" onclick="changeGridCols(-1)">−</button>
+    <span class="gcval" id="gcVal">3</span>
+    <button class="gcbtn" onclick="changeGridCols(+1)">+</button>
+  </div>
+
+  <div class="sep"></div>
+  <div class="active-dots" id="activeDots"></div>
+
+  <div class="tb-right">
+    <button class="tb-btn" id="themeToggle" onclick="toggleTheme()" title="Cambiar tema">
+      <span id="themeIcon">🌙</span>
+    </button>
+    <button class="tb-btn on" id="toggleSidebar" onclick="toggleSidebar()">
+      <span class="arr">◀</span> <span id="lblServiciosBtn">Servicios</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══ BODY ══════════════════════════════════════════════════════════════ -->
+<div id="body">
+
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div class="sb-head">
+      <span id="lblServicios">// Servicios activos</span>
+      <div class="lang-selector" onclick="toggleLanguage()">
+        <span id="currentLangFlag">🇪🇸</span>
+        <span id="currentLangLabel">ES</span>
+      </div>
+    </div>
+    <div class="sb-list" id="sbList"></div>
+    <div class="sb-login-note" id="loginNote">
+      ⚠ Login solo con email/contraseña.<br>Google, Microsoft y Apple no funcionan.
+    </div>
+    <div class="sb-footer">
+      <button id="btnToggleIcons" onclick="toggleIconMode()">Iconos</button>
+      <button onclick="toggleAll(true)" id="btnActivarTodos">Activar todos</button>
+      <button onclick="toggleAll(false)" id="btnDesactivarTodos">Desactivar todos</button>
+      <button onclick="showAddServiceDialog()" id="btnAddService">+ Añadir servicio</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main">
+    <div id="viewport">
+      <div id="grid" class="mode-cols"></div>
+      <div id="empty"><p>Sin servicios activos.</p><p style="font-size:.62rem;margin-top:4px">Actívalos desde el panel lateral.</p></div>
+    </div>
+
+    <!-- BOTTOM PANEL -->
+    <div id="bottom">
+      <div class="prompt-wrap">
+        <div class="row-meta">
+          <div class="meta-lbl" id="metaLbl">// Broadcast</div>
+          <label class="autosend-wrap">
+            <input type="checkbox" id="autoSend" checked> <span id="autoSendLabel">Auto-enviar</span>
+          </label>
+        </div>
+        <textarea id="prompt" placeholder="Escribe tu prompt… se inyectará en todos los modelos activos. (Ctrl+Enter)" rows="3"></textarea>
+      </div>
+      <button id="sendBtn" onclick="broadcastPrompt()">
+        <span id="sendTxt">ENVIAR</span>
+        <div class="btn-dots" id="btnDots"></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- Add Service Dialog -->
+<div id="addServiceDialog" class="dialog-overlay" style="display:none;">
+  <div class="dialog">
+    <div class="dialog-title" id="dialogTitle">Añadir servicio</div>
+    <div class="dialog-field">
+      <label id="dialogNameLabel">Nombre:</label>
+      <input type="text" id="newSvcName" placeholder="Mi servicio">
+    </div>
+    <div class="dialog-field">
+      <label id="dialogUrlLabel">URL:</label>
+      <input type="text" id="newSvcUrl" placeholder="https://...">
+    </div>
+    <div class="dialog-field">
+      <label id="dialogColorLabel">Color:</label>
+      <input type="color" id="newSvcColor" value="#6366f1">
+    </div>
+    <div class="dialog-actions">
+      <button class="btn-cancel" id="btnCancelAdd" onclick="closeAddServiceDialog()">Cancelar</button>
+      <button class="btn-add" id="btnConfirmAdd" onclick="confirmAddService()">Añadir</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Dialog -->
+<div id="confirmDialog" class="dialog-overlay" style="display:none;">
+  <div class="dialog">
+    <div class="dialog-title" id="confirmTitle">Confirmar</div>
+    <div class="dialog-message" id="confirmMessage"></div>
+    <div class="dialog-actions">
+      <button class="btn-cancel" onclick="closeConfirmDialog()">Cancelar</button>
+      <button class="btn-danger" id="btnConfirmAction" onclick="confirmAction()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.dialog-message { font-size: .85rem; color: var(--mid); margin-bottom: 15px; line-height: 1.5; }
+.btn-danger { background: #dc2626; border: none; color: white; }
+.btn-danger:hover { background: #b91c1c; }
+</style>
+
+<style>
+.dialog-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+.dialog {
+  background: var(--surf); border: 1px solid var(--bord); border-radius: 8px;
+  padding: 20px; width: 300px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+.dialog-title { font-size: 1rem; font-weight: 600; margin-bottom: 15px; color: var(--txt); }
+.dialog-field { margin-bottom: 12px; }
+.dialog-field label { display: block; font-size: .7rem; color: var(--mid); margin-bottom: 4px; }
+.dialog-field input[type="text"] {
+  width: 100%; padding: 8px; border: 1px solid var(--bord2); border-radius: 4px;
+  background: var(--surf2); color: var(--txt); font-size: .85rem;
+}
+.dialog-field input[type="color"] { width: 100%; height: 35px; border: none; cursor: pointer; }
+.dialog-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 15px; }
+.dialog-actions button {
+  padding: 8px 16px; border-radius: 4px; font-size: .8rem; cursor: pointer;
+}
+.btn-cancel { background: var(--surf2); border: 1px solid var(--bord2); color: var(--mid); }
+.btn-cancel:hover { border-color: var(--mid); color: var(--txt); }
+.btn-add { background: #2563eb; border: none; color: white; }
+.btn-add:hover { background: #1d4ed8; }
+</style>
+
+<script>
+const { ipcRenderer } = require('electron');
+
+/* ══ Service definitions ════════════════════════════════════════════════ */
+const SERVICES = [
+  { id:'gemini',   name:'Gemini',   url:'https://gemini.google.com/app', color:'#4285f4', partition:'persist:gemini',   hasGoogle:true,  badge:'Limited', favorite:false },
+  { id:'chatgpt',  name:'ChatGPT',  url:'https://chatgpt.com/',          color:'#10a37f', partition:'persist:chatgpt',  hasGoogle:true,  badge:'',          favorite:true  },
+  { id:'claude',   name:'Claude',   url:'https://claude.ai/new',         color:'#cc785c', partition:'persist:claude',   hasGoogle:false, badge:'',          favorite:true  },
+  { id:'kimi',     name:'Kimi',     url:'https://www.kimi.com/',         color:'#8b5cf6', partition:'persist:kimi',     hasGoogle:false, badge:'',          favorite:false },
+  { id:'deepseek', name:'DeepSeek', url:'https://chat.deepseek.com/',    color:'#06b6d4', partition:'persist:deepseek', hasGoogle:false, badge:'',          favorite:false },
+  { id:'qwen',     name:'Qwen',     url:'https://chat.qwen.ai/',         color:'#f59e0b', partition:'persist:qwen',     hasGoogle:false, badge:'Pending',     favorite:false },
+  { id:'mistral',  name:'Mistral',  url:'https://chat.mistral.ai/chat',  color:'#f97316', partition:'persist:mistral',  hasGoogle:false, badge:'Limited',     favorite:false },
+  { id:'grok',     name:'Grok',     url:'https://grok.com/',             color:'#c8d0da', partition:'persist:grok',     hasGoogle:false, badge:'',          favorite:false },
+  { id:'z',        name:'Z',        url:'https://chat.z.ai/',            color:'#7c3aed', partition:'persist:z',        hasGoogle:false, badge:'',          favorite:false },
+  { id:'copilot',  name:'Copilot',  url:'https://copilot.microsoft.com/',color:'#00a4ef', partition:'persist:copilot',  hasGoogle:true,  badge:'Limited',     favorite:false },
+  { id:'perplexity', name:'Perplexity', url:'https://www.perplexity.ai/',color:'#f59e0b', partition:'persist:perplexity', hasGoogle:false, badge:'',          favorite:false },
+  { id:'meta',     name:'Meta AI',  url:'https://www.meta.ai/',          color:'#0081fb', partition:'persist:meta',     hasGoogle:false, badge:'',          favorite:false },
+  { id:'luzia',    name:'Luzia',    url:'https://chat.luzia.com/',       color:'#06b6d4', partition:'persist:luzia',    hasGoogle:false, badge:'Limited',     favorite:false },
+];
+
+/* ══ State ══════════════════════════════════════════════════════════════ */
+const enabled    = {};   // id → bool
+const colWidths  = {};   // id → px (column mode)
+const DEF_WIDTH  = 380;
+const MIN_WIDTH  = 200;
+const MAX_WIDTH  = 1200;
+const WIDTH_STEP = 60;
+
+let layoutMode   = 'cols'; // 'cols' | 'grid'
+let gridCols     = 3;
+let sidebarOpen  = true;
+let useIcons     = true; // true = favicons, false = colors
+let currentLang  = 'es'; // 'es' | 'en'
+let isDarkMode   = true;
+const favorites  = new Set(); // favorite services
+
+function toggleTheme() {
+  isDarkMode = !isDarkMode;
+  document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+  localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+  document.getElementById('themeIcon').textContent = isDarkMode ? '🌙' : '☀️';
+}
+
+function loadTheme() {
+  try {
+    const saved = localStorage.getItem('theme');
+    isDarkMode = saved !== 'light';
+  } catch(e) {}
+  document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+  document.getElementById('themeIcon').textContent = isDarkMode ? '🌙' : '☀️';
+}
+
+const translations = {
+  es: {
+    servicios: '// Servicios activos',
+    loginNote: '⚠ Login solo con email/contraseña.<br>Google, Microsoft y Apple no funcionan.',
+    activarTodos: 'Activar todos',
+    desactivarTodos: 'Desactivar todos',
+    addService: '+ Añadir servicio',
+    sinServicios: 'Sin servicios activos.',
+    activaDesdePanel: 'Actívalos desde el panel lateral.',
+    broadcast: '// Broadcast',
+    autoSend: 'Auto-enviar',
+    promptPlaceholder: 'Escribe tu prompt… se inyectará en todos los modelos activos. (Ctrl+Enter)',
+    send: 'ENVIAR',
+    columnas: 'Columnas',
+    grid: 'Cuadrícula',
+    cols: 'Cols',
+    lblCols: 'Columnas',
+    lblGrid: 'Cuadrícula',
+    addSvcTitle: 'Añadir servicio',
+    svcName: 'Nombre:',
+    svcUrl: 'URL:',
+    svcColor: 'Color:',
+    svcNamePlaceholder: 'Mi servicio',
+    svcUrlPlaceholder: 'https://...',
+    cancel: 'Cancelar',
+    add: 'Añadir',
+    confirmDelete: 'Eliminar servicio',
+    confirmDeleteMsg: '¿Estás seguro de que quieres eliminar',
+    confirm: 'Confirmar',
+    nombreRequerido: '⚠ Nombre requerido',
+    urlRequerida: '⚠ URL requerida',
+    yaExiste: '⚠ Ya existe un servicio con ese nombre',
+    servicioAñadido: '✓ añadido',
+    servicioEliminado: '✓ eliminado',
+    promptVacio: '⚠ Escribe un prompt primero',
+    noHayServicios: '⚠ No hay servicios activos',
+    promptEnviado: '✓ Prompt enviado a',
+    modelos: 'modelo',
+    modelosPlural: 'modelos',
+    ok: 'ok',
+    fallaron: 'fallaron',
+    serviciosBtn: 'Servicios',
+    badgeLimited: 'Limited',
+    badgePending: 'Pending'
+  },
+  en: {
+    servicios: '// Active services',
+    loginNote: '⚠ Login only with email/password.<br>Google, Microsoft and Apple do not work.',
+    activarTodos: 'Enable all',
+    desactivarTodos: 'Disable all',
+    addService: '+ Add service',
+    sinServicios: 'No active services.',
+    activaDesdePanel: 'Enable them from the sidebar.',
+    broadcast: '// Broadcast',
+    autoSend: 'Auto-send',
+    promptPlaceholder: 'Write your prompt… it will be injected into all active models. (Ctrl+Enter)',
+    send: 'SEND',
+    columnas: 'Columns',
+    grid: 'Grid',
+    cols: 'Cols',
+    lblCols: 'Columns',
+    lblGrid: 'Grid',
+    addSvcTitle: 'Add service',
+    svcName: 'Name:',
+    svcUrl: 'URL:',
+    svcColor: 'Color:',
+    svcNamePlaceholder: 'My service',
+    svcUrlPlaceholder: 'https://...',
+    cancel: 'Cancel',
+    add: 'Add',
+    confirmDelete: 'Delete service',
+    confirmDeleteMsg: 'Are you sure you want to delete',
+    confirm: 'Confirm',
+    nombreRequerido: '⚠ Name required',
+    urlRequerida: '⚠ URL required',
+    yaExiste: '⚠ A service with that name already exists',
+    servicioAñadido: '✓ added',
+    servicioEliminado: '✓ deleted',
+    promptVacio: '⚠ Write a prompt first',
+    noHayServicios: '⚠ No active services',
+    promptEnviado: '✓ Prompt sent to',
+    modelos: 'model',
+    modelosPlural: 'models',
+    ok: 'ok',
+    fallaron: 'failed',
+    serviciosBtn: 'Services',
+    badgeLimited: 'Limited',
+    badgePending: 'Pending'
+  }
+};
+
+function t(key) {
+  return translations[currentLang][key] || translations['es'][key] || key;
+}
+
+function toggleLanguage() {
+  currentLang = currentLang === 'es' ? 'en' : 'es';
+  localStorage.setItem('language', currentLang);
+  updateLanguageUI();
+  updateAllTranslations();
+}
+
+function updateLanguageUI() {
+  document.getElementById('currentLangFlag').textContent = currentLang === 'es' ? '🇪🇸' : '🇬🇧';
+  document.getElementById('currentLangLabel').textContent = currentLang.toUpperCase();
+}
+
+function updateAllTranslations() {
+  document.getElementById('lblServicios').textContent = t('servicios');
+  document.getElementById('loginNote').innerHTML = t('loginNote');
+  document.getElementById('btnActivarTodos').textContent = t('activarTodos');
+  document.getElementById('btnDesactivarTodos').textContent = t('desactivarTodos');
+  document.getElementById('btnAddService').textContent = t('addService');
+  document.getElementById('empty').innerHTML = `<p>${t('sinServicios')}</p><p style="font-size:.62rem;margin-top:4px">${t('activaDesdePanel')}</p>`;
+  document.getElementById('metaLbl').textContent = t('broadcast');
+  document.getElementById('autoSendLabel').textContent = t('autoSend');
+  document.getElementById('prompt').placeholder = t('promptPlaceholder');
+  document.getElementById('sendTxt').textContent = t('send');
+  document.getElementById('lblCols').textContent = t('lblCols');
+  document.getElementById('lblGrid').textContent = t('lblGrid');
+  
+  // Update services button text
+  const serviciosBtn = document.getElementById('lblServiciosBtn');
+  if (serviciosBtn) serviciosBtn.textContent = t('serviciosBtn');
+  
+  // Dialog
+  document.getElementById('dialogTitle').textContent = t('addSvcTitle');
+  document.getElementById('dialogNameLabel').textContent = t('svcName');
+  document.getElementById('dialogUrlLabel').textContent = t('svcUrl');
+  document.getElementById('dialogColorLabel').textContent = t('svcColor');
+  document.getElementById('newSvcName').placeholder = t('svcNamePlaceholder');
+  document.getElementById('newSvcUrl').placeholder = t('svcUrlPlaceholder');
+  document.getElementById('btnCancelAdd').textContent = t('cancel');
+  document.getElementById('btnConfirmAdd').textContent = t('add');
+  
+  // Confirm dialog
+  document.getElementById('confirmTitle').textContent = t('confirmDelete');
+  document.getElementById('btnConfirmAction').textContent = t('confirm');
+  
+  // Rebuild sidebar to update badge translations
+  buildSidebar();
+}
+
+// Load saved language
+try { currentLang = localStorage.getItem('language') || 'es'; } catch(e) {}
+
+function getFaviconUrl(url) {
+  try {
+    const domain = new URL(url).hostname;
+    return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+  } catch (e) {
+    return '';
+  }
+}
+
+function getServiceIcon(s) {
+  if (useIcons) {
+    return `<img class="svc-icon" src="${getFaviconUrl(s.url)}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+            <div class="svc-dot" style="background:${s.color};display:none"></div>`;
+  }
+  return `<div class="svc-dot" style="background:${s.color}"></div>`;
+}
+
+function toggleIconMode() {
+  useIcons = !useIcons;
+  localStorage.setItem('useIcons', useIcons);
+  buildSidebar();
+  // Update button text
+  const btn = document.querySelector('.sb-footer button[onclick="toggleIconMode()"]');
+  if (btn) btn.textContent = (useIcons ? '◐' : '◑') + ' Iconos';
+}
+
+function loadCustomServices() {
+  try {
+    const saved = localStorage.getItem('customServices');
+    if (saved) {
+      const customSvcs = JSON.parse(saved);
+      customSvcs.forEach(s => {
+        if (!SERVICES.find(existing => existing.id === s.id)) {
+          SERVICES.push(s);
+        }
+      });
+    }
+  } catch (e) { console.error(e); }
+}
+
+function saveCustomServices() {
+  try {
+    const customSvcs = SERVICES.filter(s => s.custom);
+    localStorage.setItem('customServices', JSON.stringify(customSvcs));
+  } catch (e) { console.error(e); }
+}
+
+function loadFavorites() {
+  try {
+    const saved = localStorage.getItem('serviceFavorites');
+    if (saved) {
+      const favs = JSON.parse(saved);
+      favs.forEach(id => favorites.add(id));
+    }
+  } catch (e) { console.error(e); }
+}
+
+function saveFavorites() {
+  try {
+    localStorage.setItem('serviceFavorites', JSON.stringify([...favorites]));
+  } catch (e) { console.error(e); }
+}
+
+loadCustomServices();
+loadFavorites();
+try { useIcons = localStorage.getItem('useIcons') !== 'false'; } catch (e) {}
+
+SERVICES.forEach(s => {
+  enabled[s.id]   = true;
+  colWidths[s.id] = DEF_WIDTH;
+  if (s.favorite) favorites.add(s.id);
+});
+
+function getOrderedServices() {
+  const favs = SERVICES.filter(s => favorites.has(s.id));
+  const others = SERVICES.filter(s => !favorites.has(s.id));
+  return [...favs, ...others];
+}
+
+/* ══ Sidebar ════════════════════════════════════════════════════════════ */
+function buildSidebar() {
+  const list = document.getElementById('sbList');
+  list.innerHTML = '';
+  getOrderedServices().forEach(s => {
+    const row = document.createElement('div');
+    row.className = 'svc-row' + (enabled[s.id] ? ' on' : '');
+    row.id = 'sbrow-' + s.id;
+    const badgeClass = s.badge === 'Limited' ? 'limited' : (s.badge === 'Pending' ? 'pending' : '');
+    const badgeText = s.badge === 'Limited' ? t('badgeLimited') : (s.badge === 'Pending' ? t('badgePending') : '');
+    const badgeHtml = s.badge ? `<span class="svc-badge ${badgeClass}">${badgeText}</span>` : '';
+    const deleteBtn = s.custom ? `<span class="svc-delete" onclick="event.stopPropagation(); deleteCustomService('${s.id}')" title="Eliminar">✕</span>` : '';
+    row.innerHTML = `
+      <span class="svc-fav ${favorites.has(s.id) ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorite('${s.id}')" title="Favorito">★</span>
+      ${getServiceIcon(s)}
+      <div class="svc-name">${s.name}${badgeHtml}</div>
+      ${deleteBtn}
+      <div class="svc-toggle"></div>`;
+    row.onclick = () => toggleService(s.id);
+    list.appendChild(row);
+  });
+}
+
+function toggleFavorite(id) {
+  if (favorites.has(id)) {
+    favorites.delete(id);
+  } else {
+    favorites.add(id);
+  }
+  saveFavorites();
+  buildSidebar();
+  rebuildGrid();
+}
+
+let confirmCallback = null;
+
+function showConfirmDialog(title, message, callback) {
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmMessage').textContent = message;
+  confirmCallback = callback;
+  document.getElementById('confirmDialog').style.display = 'flex';
+}
+
+function closeConfirmDialog() {
+  document.getElementById('confirmDialog').style.display = 'none';
+  confirmCallback = null;
+}
+
+function confirmAction() {
+  if (confirmCallback) {
+    confirmCallback();
+  }
+  closeConfirmDialog();
+}
+
+function deleteCustomService(id) {
+  const svc = SERVICES.find(s => s.id === id);
+  if (!svc || !svc.custom) return;
+  showConfirmDialog(
+    'Eliminar servicio',
+    `¿Estás seguro de que quieres eliminar "${svc.name}"?`,
+    () => {
+      const idx = SERVICES.findIndex(s => s.id === id);
+      if (idx !== -1) SERVICES.splice(idx, 1);
+      delete enabled[id];
+      delete colWidths[id];
+      favorites.delete(id);
+      
+      saveCustomServices();
+      saveFavorites();
+      buildSidebar();
+      rebuildGrid();
+      showToast(`✓ ${svc.name} ${t('servicioEliminado')}`);
+    }
+  );
+}
+
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  document.getElementById('sidebar').classList.toggle('collapsed', !sidebarOpen);
+  document.getElementById('toggleSidebar').classList.toggle('on', !sidebarOpen);
+  const arr = document.querySelector('#toggleSidebar .arr');
+  if (arr) arr.style.transform = sidebarOpen ? '' : 'rotate(180deg)';
+}
+
+function toggleService(id) {
+  enabled[id] = !enabled[id];
+  document.getElementById('sbrow-' + id).classList.toggle('on', enabled[id]);
+  rebuildGrid();
+}
+
+function toggleAll(on) {
+  SERVICES.forEach(s => {
+    enabled[s.id] = on;
+    document.getElementById('sbrow-' + s.id).classList.toggle('on', on);
+  });
+  rebuildGrid();
+}
+
+/* ══ Add custom service ════════════════════════════════════════════════ */
+function showAddServiceDialog() {
+  document.getElementById('addServiceDialog').style.display = 'flex';
+  document.getElementById('newSvcName').value = '';
+  document.getElementById('newSvcUrl').value = '';
+  document.getElementById('newSvcColor').value = '#6366f1';
+  document.getElementById('newSvcName').focus();
+}
+
+function closeAddServiceDialog() {
+  document.getElementById('addServiceDialog').style.display = 'none';
+}
+
+function confirmAddService() {
+  const name = document.getElementById('newSvcName').value.trim();
+  const url = document.getElementById('newSvcUrl').value.trim();
+  const color = document.getElementById('newSvcColor').value;
+  
+  if (!name) {
+    showToast(t('nombreRequerido'));
+    return;
+  }
+  if (!url) {
+    showToast(t('urlRequerida'));
+    return;
+  }
+  
+  const id = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (SERVICES.find(s => s.id === id)) {
+    showToast(t('yaExiste'));
+    return;
+  }
+  
+  const finalUrl = url.startsWith('http') ? url : 'https://' + url;
+  const newService = {
+    id,
+    name,
+    url: finalUrl,
+    color: color,
+    partition: 'persist:' + id,
+    hasGoogle: false,
+    badge: '',
+    favorite: false,
+    custom: true
+  };
+  
+  SERVICES.push(newService);
+  enabled[id] = true;
+  colWidths[id] = DEF_WIDTH;
+  
+  saveCustomServices();
+  closeAddServiceDialog();
+  buildSidebar();
+  rebuildGrid();
+  showToast(`✓ ${name} ${t('servicioAñadido')}`);
+}
+
+/* ══ Layout mode ════════════════════════════════════════════════════════ */
+function setLayout(mode) {
+  layoutMode = mode;
+  document.getElementById('btnCols').classList.toggle('active', mode === 'cols');
+  document.getElementById('btnGrid').classList.toggle('active', mode === 'grid');
+  document.getElementById('gridCtrl').style.display = mode === 'grid' ? 'flex' : 'none';
+
+  const grid = document.getElementById('grid');
+  grid.classList.toggle('mode-cols', mode === 'cols');
+  grid.classList.toggle('mode-grid', mode === 'grid');
+
+  // viewport overflow: cols → scroll X, grid → scroll Y
+  const vp = document.getElementById('viewport');
+  vp.style.overflowX = mode === 'cols' ? 'auto'   : 'hidden';
+  vp.style.overflowY = mode === 'cols' ? 'hidden'  : 'auto';
+
+  applyLayout();
+}
+
+function changeGridCols(delta) {
+  gridCols = Math.min(8, Math.max(1, gridCols + delta));
+  document.getElementById('gcVal').textContent = gridCols;
+  applyLayout();
+}
+
+function applyLayout() {
+  const grid = document.getElementById('grid');
+  if (layoutMode === 'cols') {
+    // Each col has individual pixel width; grid height = 100%
+    grid.style.height = '100%';
+    grid.style.setProperty('--gap', '0px');
+    grid.style.setProperty('--gcols', '1');
+    // Apply individual widths but allow flex growth
+    SERVICES.filter(s => enabled[s.id]).forEach(s => {
+      const col = grid.querySelector(`.col[data-id="${s.id}"]`);
+      if (col) {
+        col.style.width = colWidths[s.id] + 'px';
+        col.style.flexGrow = '1';
+      }
+    });
+  } else {
+    // Grid mode: equal columns
+    grid.style.height = 'auto';
+    grid.style.setProperty('--gap', '8px');
+    grid.style.setProperty('--gcols', String(gridCols));
+    // Remove explicit widths
+    grid.querySelectorAll('.col').forEach(col => {
+      col.style.width = '';
+      col.style.flexGrow = '1';
+    });
+  }
+}
+
+/* ══ Column width controls ══════════════════════════════════════════════ */
+function changeWidth(id, delta) {
+  colWidths[id] = Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, colWidths[id] + delta));
+  const col = document.querySelector(`.col[data-id="${id}"]`);
+  if (col && layoutMode === 'cols') col.style.width = colWidths[id] + 'px';
+}
+
+/* ══ Drag-resize handle ═════════════════════════════════════════════════ */
+function initResizeHandle(handle, id) {
+  let startX, startW;
+
+  handle.addEventListener('mousedown', e => {
+    if (layoutMode !== 'cols') return;
+    e.preventDefault();
+    startX = e.clientX;
+    startW = colWidths[id];
+    handle.classList.add('dragging');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+
+    const onMove = e => {
+      const dx  = e.clientX - startX;
+      const nw  = Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, startW + dx));
+      colWidths[id] = nw;
+      const col = document.querySelector(`.col[data-id="${id}"]`);
+      if (col) col.style.width = nw + 'px';
+    };
+    const onUp = () => {
+      handle.classList.remove('dragging');
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+}
+
+/* ══ Rebuild grid ═══════════════════════════════════════════════════════ */
+function rebuildGrid() {
+  const ordered = getOrderedServices();
+  const active = ordered.filter(s => enabled[s.id]);
+  const grid   = document.getElementById('grid');
+  const empty  = document.getElementById('empty');
+
+  // Header dots
+  document.getElementById('activeDots').innerHTML = active.map((s,i) =>
+    `<div class="adot" style="background:${s.color};animation-delay:${i*.12}s"></div>`
+  ).join('');
+
+  // Send button dots
+  const dotsHtml = active.map(s => {
+    if (useIcons) {
+      return `<img class="btn-dot" src="${getFaviconUrl(s.url)}" style="width:8px;height:8px;border-radius:2px;object-fit:contain;background:#fff" onerror="this.style.display='none'" />`;
+    }
+    return `<div class="btn-dot" style="background:${s.color}"></div>`;
+  }).join('');
+  document.getElementById('btnDots').innerHTML = dotsHtml;
+
+  if (!active.length) {
+    grid.style.display = 'none'; empty.classList.add('show'); return;
+  }
+  grid.style.display = 'flex'; empty.classList.remove('show');
+
+  // Remove disabled cols
+  [...grid.querySelectorAll('.col')].forEach(col => {
+    if (!enabled[col.dataset.id]) col.remove();
+  });
+
+  // Add missing cols
+  active.forEach(s => {
+    if (!grid.querySelector(`.col[data-id="${s.id}"]`))
+      grid.appendChild(makeColumn(s));
+  });
+
+  // Re-order
+  active.forEach(s => {
+    const el = grid.querySelector(`.col[data-id="${s.id}"]`);
+    if (el) grid.appendChild(el);
+  });
+
+  applyLayout();
+}
+
+/* ══ Build a single column ══════════════════════════════════════════════ */
+function makeColumn(s) {
+  const col = document.createElement('div');
+  col.className = 'col';
+  col.dataset.id = s.id;
+  col.style.setProperty('--accent', s.color + '55');
+  col.style.width = colWidths[s.id] + 'px';
+
+  col.innerHTML = `
+    <div class="chrome">
+      <div class="tls">
+        <div class="tl tl-r"></div><div class="tl tl-y"></div><div class="tl tl-g"></div>
+      </div>
+      <div class="url-bar">
+        <svg class="lock" width="8" height="9" viewBox="0 0 8 9" fill="none">
+          <rect x="1" y="4" width="6" height="4.5" rx="1" fill="currentColor"/>
+          <path d="M2 4V2.8A2 2 0 0 1 6 2.8V4" stroke="currentColor" stroke-width="1" fill="none"/>
+        </svg>
+        ${(function(){try{return new URL(s.url).hostname;}catch(e){return s.url;}})()}
+      </div>
+      <div class="w-ctrl">
+        <button class="w-btn" title="Reducir ancho" onclick="changeWidth('${s.id}', -${WIDTH_STEP})">−</button>
+        <button class="w-btn" title="Aumentar ancho" onclick="changeWidth('${s.id}', +${WIDTH_STEP})">+</button>
+      </div>
+      <button class="reload-btn" title="Recargar" onclick="reloadCol('${s.id}')">↺</button>
+      <div class="ai-tag" style="background:${s.color}18;color:${s.color};border:1px solid ${s.color}30">
+        ${s.name.toUpperCase()}
+      </div>
+    </div>
+    <div class="loadbar" id="lb-${s.id}" style="background:${s.color}"></div>
+    <webview
+      id="wv-${s.id}"
+      src="${s.url}"
+      partition="${s.partition}"
+      allowpopups
+      useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    ></webview>
+    <div class="google-hint" id="gh-${s.id}">
+      <span>🔑 Completa el login en tu navegador → luego recarga</span>
+      <button onclick="reloadCol('${s.id}')">↺ Recargar</button>
+    </div>
+    <div class="statusbar">
+      <div class="stsdot loading" id="sd-${s.id}"></div>
+      <div class="stslabel" id="sl-${s.id}">Cargando…</div>
+    </div>
+    <div class="resize-handle" id="rh-${s.id}"></div>`;
+
+  requestAnimationFrame(() => {
+    const wv = document.getElementById('wv-' + s.id);
+    if (!wv) return;
+    wv.addEventListener('did-start-loading', () => {
+      document.getElementById('lb-' + s.id)?.classList.add('loading');
+      setStatus(s.id, 'loading', 'Cargando…');
+    });
+    wv.addEventListener('did-stop-loading', () => {
+      document.getElementById('lb-' + s.id)?.classList.remove('loading');
+      setStatus(s.id, 'ready', wv.getURL() || 'Listo');
+    });
+    wv.addEventListener('did-fail-load', e => {
+      if (e.errorCode === -3) return;
+      document.getElementById('lb-' + s.id)?.classList.remove('loading');
+      setStatus(s.id, 'error', 'Error: ' + e.errorDescription);
+    });
+    wv.addEventListener('page-title-updated', e => setStatus(s.id, 'ready', e.title || wv.getURL()));
+
+    // Wire resize handle
+    const rh = document.getElementById('rh-' + s.id);
+    if (rh) initResizeHandle(rh, s.id);
+  });
+
+  return col;
+}
+
+function setStatus(id, cls, txt) {
+  const sd = document.getElementById('sd-' + id);
+  const sl = document.getElementById('sl-' + id);
+  if (sd) sd.className = 'stsdot ' + cls;
+  if (sl) sl.textContent = txt;
+}
+
+function reloadCol(id) {
+  document.getElementById('wv-' + id)?.reload();
+  document.getElementById('gh-' + id)?.classList.remove('show');
+}
+
+/* ══ IPC ════════════════════════════════════════════════════════════════ */
+ipcRenderer.on('google-auth-opened', (_, partition) => {
+  const s = SERVICES.find(x => x.partition === partition);
+  if (s) document.getElementById('gh-' + s.id)?.classList.add('show');
+  showToast('🔑 Login de Google abierto en el navegador — recarga cuando termines');
+});
+
+ipcRenderer.on('auth-popup-closed', (_, partition) => {
+  const s = SERVICES.find(x => x.partition === partition);
+  if (s) setTimeout(() => reloadCol(s.id), 600);
+});
+
+/* ══ Broadcast ══════════════════════════════════════════════════════════ */
+async function broadcastPrompt() {
+  const prompt   = document.getElementById('prompt').value.trim();
+  const autoSend = document.getElementById('autoSend').checked;
+  if (!prompt) { showToast(t('promptVacio')); return; }
+
+  const active = SERVICES.filter(s => enabled[s.id]);
+  if (!active.length) { showToast(t('noHayServicios')); return; }
+
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  document.getElementById('sendTxt').textContent = '…';
+
+  let ok = 0, fail = 0;
+  await Promise.all(active.map(async s => {
+    const wv = document.getElementById('wv-' + s.id);
+    if (!wv) { fail++; return; }
+    try {
+      const res = await ipcRenderer.invoke('inject-prompt', { viewId: wv.getWebContentsId(), prompt, autoSend });
+      if (res?.ok) {
+        ok++;
+        const col = document.querySelector(`.col[data-id="${s.id}"]`);
+        if (col) { col.classList.remove('flash'); void col.offsetWidth; col.classList.add('flash'); }
+      } else fail++;
+    } catch { fail++; }
+  }));
+
+  const modelWord = ok !== 1 ? t('modelosPlural') : t('modelos');
+  showToast(fail === 0
+    ? `${t('promptEnviado')} ${ok} ${modelWord}`
+    : `${t('promptEnviado')} ${ok} ${t('ok')}  ✗ ${fail} ${t('fallaron')}`, 4000);
+  btn.disabled = false;
+  document.getElementById('sendTxt').textContent = t('send');
+}
+
+document.getElementById('prompt').addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); broadcastPrompt(); }
+});
+const ta = document.getElementById('prompt');
+ta.addEventListener('input', () => { ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 160) + 'px'; });
+
+/* ══ Toast ══════════════════════════════════════════════════════════════ */
+let _tt;
+function showToast(msg, dur = 3500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(_tt); _tt = setTimeout(() => t.classList.remove('show'), dur);
+}
+
+/* ══ Init ═══════════════════════════════════════════════════════════════ */
+document.getElementById('newSvcName').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); document.getElementById('newSvcUrl').focus(); }
+});
+document.getElementById('newSvcUrl').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); confirmAddService(); }
+});
+
+loadTheme();
+buildSidebar();
+rebuildGrid();
+setLayout('cols'); // default: columns mode
+document.getElementById('btnToggleIcons').textContent = (useIcons ? '◐' : '◑') + ' Iconos';
+updateLanguageUI();
+updateAllTranslations();
+</script>
+</body>
+</html>
