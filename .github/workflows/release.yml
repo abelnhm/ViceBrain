@@ -51,8 +51,7 @@ jobs:
         with:
           name: windows
           path: |
-            dist/ViceBrain-*-Setup.exe
-            dist/ViceBrain-*-portable.exe
+            dist/*.exe
 
       - name: Upload macOS artifacts
         if: matrix.os == 'macos-latest'
