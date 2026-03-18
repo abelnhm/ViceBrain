@@ -52,13 +52,17 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
   padding: 0 14px; background: var(--surf); border-bottom: 1px solid var(--bord);
   -webkit-app-region: drag; flex-shrink: 0; user-select: none;
 }
+.app-logo {
+  width: 24px; height: 24px; border-radius: 6px; flex-shrink: 0;
+  margin-right: 6px; -webkit-app-region: no-drag; object-fit: contain;
+}
 .logo {
-  width: 22px; height: 22px; border-radius: 5px; flex-shrink: 0;
+  width: 24px; height: 24px; border-radius: 6px; flex-shrink: 0;
   background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink), var(--accent-cyan));
-  animation: spin 10s linear infinite; -webkit-app-region: no-drag;
+  animation: spin 10s linear infinite; -webkit-app-region: no-drag; margin-right: 6px;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-.title-txt { font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-cyan); margin-left: 4px; }
+.title-txt { font-size: .78rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-cyan); }
 .title-txt span { color: var(--accent-pink); font-weight: 400; }
 
 /* separator */
@@ -90,8 +94,8 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
   display: flex; align-items: center; gap: 4px;
 }
 .mode-btn:last-child { border-right: none; }
-.mode-btn:hover { color: var(--txt); background: var(--surf2); }
-.mode-btn.active { background: var(--accent-purple); color: #fff; }
+.mode-btn:hover { color: var(--txt); background: var(--surf2); border-color: var(--accent-cyan); }
+.mode-btn.active { background: var(--accent-purple); color: #fff; border-color: var(--accent-cyan); }
 
 /* grid cols control */
 .grid-ctrl { display: flex; align-items: center; gap: 4px; -webkit-app-region: no-drag; }
@@ -140,8 +144,8 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
   height: 42px;
 }
 .sb-list { flex: 1; overflow-y: auto; padding: 6px 8px; }
-.sb-list::-webkit-scrollbar { width: 3px; }
-.sb-list::-webkit-scrollbar-thumb { background: var(--bord2); border-radius: 3px; }
+.sb-list::-webkit-scrollbar { width: 5px; }
+.sb-list::-webkit-scrollbar-thumb { background: var(--accent-cyan); border-radius: 3px; }
 .svc-row {
   display: flex; align-items: center; gap: 9px;
   padding: 7px 8px; border-radius: 6px; cursor: pointer;
@@ -153,6 +157,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
   margin-right: 2px; flex-shrink: 0;
 }
 .svc-row .svc-fav:hover, .svc-row .svc-fav.active { color: #fbbf24; }
+.svc-divider { height: 1px; background: var(--bord); margin: 8px 0; }
 .svc-dot  { width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; }
 .svc-icon { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; object-fit: contain; background: #fff; padding: 1px; }
 .svc-name { font-size: .78rem; font-weight: 600; flex: 1; display: flex; align-items: center; gap: 5px; }
@@ -182,7 +187,14 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
   padding: 10px 12px; margin: 0 8px 8px; background: var(--accent-yellow);
   border-radius: 5px; font-size: .75rem; color: #000;
   line-height: 1.4; border: 1px solid var(--accent-yellow);
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
 }
+.sb-login-note.hidden { display: none; }
+.login-note-toggle {
+  background: rgba(0,0,0,0.2); border: 1px solid rgba(0,0,0,0.3); border-radius: 3px; 
+  color: #000; cursor: pointer; font-size: .8rem; padding: 2px 6px; flex-shrink: 0;
+}
+.login-note-toggle:hover { background: rgba(0,0,0,0.4); }
 .sb-footer { padding: 9px 12px; border-top: 1px solid var(--bord); flex-shrink: 0; display: flex; flex-direction: column; gap: 5px; }
 .sb-footer button {
   width: 100%; padding: 6px; background: var(--surf2); border: 1px solid var(--bord2);
@@ -199,10 +211,10 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 /* ══════════════════════════════════════════════════════════════
    VIEWPORT — wraps the scrollable grid
 ══════════════════════════════════════════════════════════════ */
-#viewport { flex: 1; min-height: 0; overflow: auto; padding: 8px 8px 0; }
+#viewport { flex: 1; min-height: 0; overflow: auto; padding: 8px; }
 #viewport::-webkit-scrollbar { width: 6px; height: 6px; }
 #viewport::-webkit-scrollbar-track { background: transparent; }
-#viewport::-webkit-scrollbar-thumb { background: var(--bord2); border-radius: 3px; }
+#viewport::-webkit-scrollbar-thumb { background: var(--accent-cyan); border-radius: 3px; }
 
 /* ══════════════════════════════════════════════════════════════
    GRID — layout controlled by JS
@@ -372,11 +384,11 @@ textarea {
 textarea::placeholder { color: var(--dim); }
 textarea:focus { border-color: var(--accent-cyan); }
 #sendBtn {
-  flex-shrink: 0; width: 90px;
+  flex-shrink: 0; width: 100px;
   background: var(--accent-purple);
   border: 1px solid var(--accent-purple); border-radius: 5px;
   color: #fff; font-family: 'Space Mono', monospace;
-  font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  font-size: .85rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
   cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
   transition: all .18s;
   height: 100%;
@@ -384,6 +396,7 @@ textarea:focus { border-color: var(--accent-cyan); }
 #sendBtn:hover:not(:disabled) { border-color:var(--accent-cyan); transform:translateY(-1px); }
 #sendBtn:active:not(:disabled) { transform:translateY(0); }
 #sendBtn:disabled { opacity:.4; cursor:not-allowed; }
+.send-icon { font-size: 1.2rem; margin-bottom: 2px; }
 .btn-dots { display:flex; gap:3px; flex-wrap:wrap; justify-content:center; max-width:54px; }
 .btn-dot  { width:5px; height:5px; border-radius:50%; }
 
@@ -404,9 +417,9 @@ textarea:focus { border-color: var(--accent-cyan); }
 </head>
 <body>
 
-<!-- ══ TITLEBAR ══════════════════════════════════════════════════════════ -->
+<!-- ══ TITLEBAR ══════════════════════════════════════════════════════════════ -->
 <div id="titlebar">
-  <div class="logo"></div>
+  <img class="app-logo" src="icon.png" alt="ViceBrain" onerror="this.style.display='none'">
   <div class="title-txt">ViceBrain</div>
   <div class="sep"></div>
 
@@ -457,12 +470,13 @@ textarea:focus { border-color: var(--accent-cyan); }
     </div>
     <div class="sb-list" id="sbList"></div>
     <div class="sb-login-note" id="loginNote">
-      ⚠ Login solo con email/contraseña.<br>Google, Microsoft y Apple no funcionan.
+      <span id="loginNoteText">⚠ Login solo con email/contraseña.<br>Google, Microsoft y Apple no funcionan.</span>
+      <button class="login-note-toggle" onclick="toggleLoginNote()" title="Ocultar">✕</button>
     </div>
     <div class="sb-footer">
-      <button onclick="toggleAll(true)" id="btnActivarTodos">Activar todos</button>
-      <button onclick="toggleAll(false)" id="btnDesactivarTodos">Desactivar todos</button>
       <button onclick="showAddServiceDialog()" id="btnAddService">+ Añadir servicio</button>
+      <button onclick="toggleAll(true)" id="btnActivarTodos">✓ Activar todos</button>
+      <button onclick="toggleAll(false)" id="btnDesactivarTodos">✗ Desactivar todos</button>
     </div>
   </div>
 
@@ -485,6 +499,7 @@ textarea:focus { border-color: var(--accent-cyan); }
         <textarea id="prompt" placeholder="Escribe tu prompt… se inyectará en todos los modelos activos. (Ctrl+Enter)" rows="3"></textarea>
       </div>
       <button id="sendBtn" onclick="broadcastPrompt()">
+        <span class="send-icon">➤</span>
         <span id="sendTxt">ENVIAR</span>
         <div class="btn-dots" id="btnDots"></div>
       </button>
@@ -613,6 +628,28 @@ function loadTheme() {
   } catch(e) {}
   document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
   document.getElementById('themeIcon').textContent = isDarkMode ? '🌙' : '☀️';
+}
+
+let loginNoteVisible = true;
+function toggleLoginNote() {
+  loginNoteVisible = !loginNoteVisible;
+  const note = document.getElementById('loginNote');
+  if (loginNoteVisible) {
+    note.classList.remove('hidden');
+  } else {
+    note.classList.add('hidden');
+  }
+  localStorage.setItem('loginNoteVisible', loginNoteVisible);
+}
+
+function loadLoginNotePreference() {
+  try {
+    const saved = localStorage.getItem('loginNoteVisible');
+    if (saved === 'false') {
+      loginNoteVisible = false;
+      document.getElementById('loginNote').classList.add('hidden');
+    }
+  } catch(e) {}
 }
 
 const translations = {
@@ -862,7 +899,36 @@ function getOrderedServices() {
 function buildSidebar() {
   const list = document.getElementById('sbList');
   list.innerHTML = '';
-  getOrderedServices().forEach(s => {
+  const ordered = getOrderedServices();
+  const favs = ordered.filter(s => favorites.has(s.id));
+  const others = ordered.filter(s => !favorites.has(s.id));
+  let isFirst = true;
+  
+  favs.forEach(s => {
+    const row = document.createElement('div');
+    row.className = 'svc-row' + (enabled[s.id] ? ' on' : '');
+    row.id = 'sbrow-' + s.id;
+    const badgeClass = s.badge === 'Limited' ? 'limited' : (s.badge === 'Pending' ? 'pending' : '');
+    const badgeText = s.badge === 'Limited' ? t('badgeLimited') : (s.badge === 'Pending' ? t('badgePending') : '');
+    const badgeHtml = s.badge ? `<span class="svc-badge ${badgeClass}">${badgeText}</span>` : '';
+    const deleteBtn = s.custom ? `<span class="svc-delete" onclick="event.stopPropagation(); deleteCustomService('${s.id}')" title="Eliminar">✕</span>` : '';
+    row.innerHTML = `
+      <span class="svc-fav ${favorites.has(s.id) ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorite('${s.id}')" title="Favorito">★</span>
+      ${getServiceIcon(s)}
+      <div class="svc-name">${s.name}${badgeHtml}</div>
+      ${deleteBtn}
+      <div class="svc-toggle"></div>`;
+    row.onclick = () => toggleService(s.id);
+    list.appendChild(row);
+  });
+  
+  if (favs.length > 0 && others.length > 0) {
+    const divider = document.createElement('div');
+    divider.className = 'svc-divider';
+    list.appendChild(divider);
+  }
+  
+  others.forEach(s => {
     const row = document.createElement('div');
     row.className = 'svc-row' + (enabled[s.id] ? ' on' : '');
     row.id = 'sbrow-' + s.id;
@@ -1314,6 +1380,7 @@ document.getElementById('newSvcUrl').addEventListener('keydown', e => {
 });
 
 loadTheme();
+loadLoginNotePreference();
 buildSidebar();
 rebuildGrid();
 setLayout('cols'); // default: columns mode
