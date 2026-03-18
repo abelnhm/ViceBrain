@@ -53,6 +53,7 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         env:
           GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # Check for vulnerable dependencies
   safety-check:
@@ -89,4 +90,4 @@ jobs:
           fetch-depth: 0
 
       - name: TruffleHog
-        uses: edplato/trufflehog-actions-scanner@v1.0.8
+        run: docker run --rm -v "${{ github.workspace }}:/workspace" trufflesecurity/trufflehog:latest filesystem /workspace
