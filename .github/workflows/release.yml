@@ -9,6 +9,8 @@ jobs:
   release:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
+    permissions:
+      contents: read
     strategy:
       matrix:
         include:
@@ -80,7 +82,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           draft: true
-          files: artifacts/**/*.exe
-          artifacts: artifacts/**/*
+          files: artifacts/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -26,7 +26,7 @@ jobs:
         run: npm ci
 
       - name: Run ESLint
-        run: npx eslint src/**/*.js --max-warnings=5
+        run: npx eslint src/**/*.js
 
   # Check for console.log statements
   no-console:

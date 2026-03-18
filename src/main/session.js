@@ -34,8 +34,7 @@ function cleanLockFiles(app, SERVICES) {
       if (!e.isDirectory() || !e.name.endsWith('.leveldb')) continue;
       const lock = path.join(idbDir, e.name, 'LOCK');
       if (fs.existsSync(lock)) {
-        try   { fs.unlinkSync(lock); console.log(`[cleanup] Removed stale LOCK: ${lock}`); }
-        catch (err) { console.warn(`[cleanup] Skip LOCK (${lock}): ${err.message}`); }
+        try   { fs.unlinkSync(lock); } catch {}
       }
     }
   });
