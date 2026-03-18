@@ -1,0 +1,50 @@
+version: 2
+updates:
+  # Enable npm dependency updates
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+    labels:
+      - "dependencies"
+      - "automated"
+    reviewers:
+      - abelnhm
+    ignore:
+      # Ignore development dependencies
+      - dependency-name: "electron"
+        update-types: ["major"]
+        # Keep Electron stable for production builds
+      - dependency-name: "electron-builder"
+        update-types: ["major"]
+    groups:
+      # Group minor and patch updates
+      production-dependencies:
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
+      development-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Also check GitHub Actions for updates
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "ci/cd"
+      - "automated"
+    reviewers:
+      - abelnhm

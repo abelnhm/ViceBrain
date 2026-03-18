@@ -1,0 +1,19 @@
+# Code Owners for ViceBrain
+# https://help.github.com/en/articles/about-code-owners
+
+# Default owner for all files
+*       @abelnhm
+
+# Security files
+.github/workflows/*    @abelnhm
+SECURITY.md           @abelnhm
+
+# Documentation
+*.md                  @abelnhm
+
+# Source code
+src/**/*              @abelnhm
+
+# Configuration files
+package.json          @abelnhm
+package-lock.json     @abelnhm
