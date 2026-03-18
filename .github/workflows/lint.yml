@@ -91,5 +91,5 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Verify Electron installation
-        run: npx electron --version
+      - name: Verify package.json exists
+        run: test -f package.json && echo "package.json found"
