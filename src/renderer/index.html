@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>ViceBrain</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="titlebar">
+  <img class="app-logo" src="../../assets/icons/icon.png" alt="ViceBrain" onerror="this.style.display='none'">
+  <div class="title-txt">ViceBrain</div>
+  <div class="sep"></div>
+
+  <div class="mode-group" title="Modo de visualización">
+    <button class="mode-btn active" id="btnCols">
+      ▐▐▐ <span id="lblCols">Columnas</span>
+    </button>
+    <button class="mode-btn" id="btnGrid">
+      ⊞ <span id="lblGrid">Cuadrícula</span>
+    </button>
+  </div>
+
+  <div class="grid-ctrl" id="gridCtrl" style="display:none">
+    <label>cols:</label>
+    <button class="gcbtn" id="btnColsMinus">−</button>
+    <span class="gcval" id="gcVal">3</span>
+    <button class="gcbtn" id="btnColsPlus">+</button>
+  </div>
+
+  <div class="sep"></div>
+  <div class="active-dots" id="activeDots"></div>
+
+  <div class="tb-right">
+    <button class="tb-btn" id="langToggle" title="Cambiar idioma">
+      <span id="currentLangFlag">🇪🇸</span>
+    </button>
+    <button class="tb-btn" id="btnToggleIcons" title="Mostrar iconos">◑</button>
+    <button class="tb-btn" id="themeToggle" title="Cambiar tema">
+      <span id="themeIcon">🌙</span>
+    </button>
+    <button class="tb-btn on" id="toggleSidebar">
+      <span id="sidebarIcon">☰</span> <span id="lblServiciosBtn">Servicios</span>
+    </button>
+  </div>
+</div>
+
+<div id="body">
+  <div id="sidebar">
+    <div class="sb-head">
+      <span id="lblServicios">// Servicios activos</span>
+    </div>
+    <div class="sb-list" id="sbList"></div>
+    <div class="sb-login-note" id="loginNote">
+      <span id="loginNoteText">⚠ Login solo con email/contraseña.<br>Google, Microsoft y Apple no funcionan.</span>
+      <button class="login-note-toggle" title="Ocultar">✕</button>
+    </div>
+    <div class="sb-footer">
+      <button id="btnAddService">+ Añadir servicio</button>
+      <button id="btnActivarTodos">✓ Activar todos</button>
+      <button id="btnDesactivarTodos">✗ Desactivar todos</button>
+    </div>
+  </div>
+
+  <div id="main">
+    <div id="viewport">
+      <div id="grid" class="mode-cols"></div>
+      <div id="empty"><p>Sin servicios activos.</p><p style="font-size:.62rem;margin-top:4px">Actívalos desde el panel lateral.</p></div>
+    </div>
+
+    <div id="bottom">
+      <div class="prompt-wrap">
+        <div class="row-meta">
+          <div class="meta-lbl" id="metaLbl">// Broadcast</div>
+          <label class="autosend-wrap">
+            <input type="checkbox" id="autoSend" checked> <span id="autoSendLabel">Auto-enviar</span>
+          </label>
+        </div>
+        <textarea id="prompt" placeholder="Escribe tu prompt… se inyectará en todos los modelos activos. (Ctrl+Enter)" rows="3"></textarea>
+      </div>
+      <button id="sendBtn">
+        <span class="send-icon">➤</span>
+        <span id="sendTxt">ENVIAR</span>
+        <div class="btn-dots" id="btnDots"></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<div id="addServiceDialog" class="dialog-overlay" style="display:none;">
+  <div class="dialog">
+    <div class="dialog-title" id="dialogTitle">Añadir servicio</div>
+    <div class="dialog-field">
+      <label id="dialogNameLabel">Nombre:</label>
+      <input type="text" id="newSvcName" placeholder="Mi servicio">
+    </div>
+    <div class="dialog-field">
+      <label id="dialogUrlLabel">URL:</label>
+      <input type="text" id="newSvcUrl" placeholder="https://...">
+    </div>
+    <div class="dialog-field">
+      <label id="dialogColorLabel">Color:</label>
+      <input type="color" id="newSvcColor" value="#6366f1">
+    </div>
+    <div class="dialog-actions">
+      <button class="btn-cancel" id="btnCancelAdd">Cancelar</button>
+      <button class="btn-add" id="btnConfirmAdd">Añadir</button>
+    </div>
+  </div>
+</div>
+
+<div id="confirmDialog" class="dialog-overlay" style="display:none;">
+  <div class="dialog">
+    <div class="dialog-title" id="confirmTitle">Confirmar</div>
+    <div class="dialog-message" id="confirmMessage"></div>
+    <div class="dialog-actions">
+      <button class="btn-cancel" id="btnCancelConfirm">Cancelar</button>
+      <button class="btn-danger" id="btnConfirmAction">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/data/services-data.js"></script>
+<script src="js/app/i18n.js"></script>
+<script src="js/app/storage.js"></script>
+<script src="js/components/sidebar.js"></script>
+<script src="js/components/layout.js"></script>
+<script src="js/components/dialogs.js"></script>
+<script src="js/components/broadcast.js"></script>
+<script src="js/app/app.js"></script>
+
+</body>
+</html>

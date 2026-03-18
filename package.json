@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "ViceBrain - All major AI chats side by side",
   "author": "ViceBrain Team / Abel Naharro",
-  "main": "main.js",
+  "main": "src/main/index.js",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
@@ -18,10 +18,13 @@
       "output": "dist"
     },
     "files": [
-      "main.js",
-      "preload-spoof.js",
-      "index.html"
+      "src/",
+      "assets/",
+      "node_modules/"
     ],
+    "extraMetadata": {
+      "main": "src/main/index.js"
+    },
     "asar": true,
     "win": {
       "target": [

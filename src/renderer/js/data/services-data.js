@@ -1,0 +1,15 @@
+const SERVICES = [
+  { id:'gemini',   name:'Gemini',   url:'https://gemini.google.com/app', color:'#4285f4', partition:'persist:gemini',   hasGoogle:true,  badge:'Limited', favorite:false },
+  { id:'chatgpt',  name:'ChatGPT',  url:'https://chatgpt.com/',          color:'#10a37f', partition:'persist:chatgpt',  hasGoogle:true,  badge:'',          favorite:true  },
+  { id:'claude',   name:'Claude',   url:'https://claude.ai/new',         color:'#cc785c', partition:'persist:claude',   hasGoogle:false, badge:'',          favorite:true  },
+  { id:'kimi',     name:'Kimi',     url:'https://www.kimi.com/',         color:'#8b5cf6', partition:'persist:kimi',     hasGoogle:false, badge:'',          favorite:false },
+  { id:'deepseek', name:'DeepSeek', url:'https://chat.deepseek.com/',    color:'#06b6d4', partition:'persist:deepseek', hasGoogle:false, badge:'',          favorite:false },
+  { id:'qwen',     name:'Qwen',     url:'https://chat.qwen.ai/',         color:'#f59e0b', partition:'persist:qwen',     hasGoogle:false, badge:'Pending',     favorite:false },
+  { id:'mistral',  name:'Mistral',  url:'https://chat.mistral.ai/chat',  color:'#f97316', partition:'persist:mistral',  hasGoogle:false, badge:'Limited',     favorite:false },
+  { id:'grok',     name:'Grok',     url:'https://grok.com/',             color:'#c8d0da', partition:'persist:grok',     hasGoogle:false, badge:'',          favorite:false },
+  { id:'z',        name:'Z',        url:'https://chat.z.ai/',            color:'#7c3aed', partition:'persist:z',        hasGoogle:false, badge:'',          favorite:false },
+  { id:'copilot',  name:'Copilot',  url:'https://copilot.microsoft.com/',color:'#00a4ef', partition:'persist:copilot',  hasGoogle:true,  badge:'Limited',     favorite:false },
+  { id:'perplexity', name:'Perplexity', url:'https://www.perplexity.ai/',color:'#f59e0b', partition:'persist:perplexity', hasGoogle:false, badge:'',          favorite:false },
+  { id:'meta',     name:'Meta AI',  url:'https://www.meta.ai/',          color:'#0081fb', partition:'persist:meta',     hasGoogle:false, badge:'',          favorite:false },
+  { id:'luzia',    name:'Luzia',    url:'https://chat.luzia.com/',       color:'#06b6d4', partition:'persist:luzia',    hasGoogle:false, badge:'Limited',     favorite:false },
+];
